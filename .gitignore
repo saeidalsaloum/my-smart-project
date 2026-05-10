@@ -7,7 +7,7 @@ Icon?
 .Spotlight-V100
 .Trashes
 
-# Python
+# Python caches and artifacts
 __pycache__/
 *.py[cod]
 *$py.class
@@ -17,11 +17,19 @@ coverage.xml
 htmlcov/
 .mypy_cache/
 .ruff_cache/
+.tox/
+.nox/
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
+
+# Virtual environments
 .venv/
 venv/
 env/
+ENV/
 
-# Node
+# Node and frontend artifacts
 node_modules/
 npm-debug.log*
 yarn-debug.log*
@@ -37,15 +45,17 @@ build/
 logs/
 *.log
 
-# Environment and secrets
+# Environment files and secrets
 .env
 .env.*
 !.env.example
+.envrc
 *.pem
 *.key
 *.crt
 *.p12
 *.pfx
+secrets/
 
 # Temporary files
 .tmp/
@@ -55,7 +65,8 @@ temp/
 *.swp
 *.swo
 
-# Build artifacts
+# Build outputs and caches
 out/
 release/
 .cache/
+site/
