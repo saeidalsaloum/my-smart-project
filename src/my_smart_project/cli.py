@@ -6,7 +6,7 @@ import argparse
 import sys
 from collections.abc import Sequence
 
-from my_smart_project.content_workspace import (
+from .content_workspace import (
     WorkspaceError,
     create_video_project,
     export_project_brief,
@@ -15,7 +15,7 @@ from my_smart_project.content_workspace import (
     load_video_project,
     update_video_status,
 )
-from my_smart_project.models import ALLOWED_STATUSES, VideoProject, get_status_message
+from .models import ALLOWED_STATUSES, VideoProject, get_status_message
 
 
 def build_parser() -> argparse.ArgumentParser:
