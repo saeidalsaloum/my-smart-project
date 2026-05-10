@@ -1,17 +1,21 @@
-"""Minimal CLI entry point for my-smart-project."""
+"""Command-line entry point for my-smart-project."""
 
-STATUS_MESSAGE = "my-smart-project: minimal Codex-ready starter is working."
+from __future__ import annotations
+
+PROJECT_NAME = "my-smart-project"
+STATUS_MESSAGE = f"{PROJECT_NAME}: minimal Codex-ready starter is working."
 
 
 def get_status_message() -> str:
-    """Return the current project status message."""
+    """Return the deterministic project status message."""
     return STATUS_MESSAGE
 
 
-def main() -> None:
-    """Print the project status message."""
+def main() -> int:
+    """Run the CLI and return a process exit code."""
     print(get_status_message())
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
