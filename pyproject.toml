@@ -1,0 +1,14 @@
+[project]
+name = "my-smart-project"
+version = "0.1.0"
+description = "A minimal Codex-ready Python starter foundation."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.urls]
+Repository = "https://github.com/saeidalsaloum/my-smart-project"
+
+[tool.codex]
+status = "minimal-foundation"
+standard_library_only = true
