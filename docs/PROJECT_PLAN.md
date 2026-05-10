@@ -2,83 +2,104 @@
 
 ## Purpose
 
-`my-smart-project` is a minimal starter repository for safe AI-assisted development with Codex. The immediate goal is not to build a large product, but to create a clean foundation that can be inspected, tested, and extended later.
+`my-smart-project` is a safe foundation for future AI-assisted software development. The current goal is to make the repository understandable, runnable, testable, and reviewable before choosing a larger product direction.
 
-## Current Scope
+This plan intentionally separates confirmed scope from future possibilities so the repository does not grow by accident.
 
-Confirmed current scope:
+## Confirmed Current Scope
+
+The repository currently provides:
 
 - A minimal Python CLI entry point.
-- A small behavior test for the CLI/status message.
-- Basic documentation for running, testing, and future planning.
-- Strict repository operating instructions for Codex.
+- A deterministic status message.
+- Standard-library `unittest` coverage for the CLI behavior.
+- Documentation for local operation, development workflow, security rules, and future planning.
+- A GitHub Actions workflow that runs tests on `push` and `pull_request` without secrets or deployment.
 
-Out of scope for now:
+## Explicit Non-Goals
 
-- Web application scaffolding.
-- Databases.
-- Authentication.
-- Cloud deployment.
-- External APIs or service integrations.
-- AI provider integrations.
-- Large framework decisions.
+The project is not currently:
+
+- A web application.
+- An API service.
+- A database-backed system.
+- A deployment target.
+- An AI API integration.
+- A media processing pipeline.
+- A customer data system.
+- A legal, personal, or private document repository.
+
+Do not add those capabilities without a documented decision and explicit approval.
+
+## Future Possible Directions
+
+The project could later become one of several things, but no direction is selected yet:
+
+- A small CLI productivity tool.
+- A local automation helper.
+- A structured project template.
+- A documentation-first planning repository.
+- A later application prototype after scope is defined.
+
+The next direction should be chosen based on a written product goal, not on framework preference.
 
 ## Intended Phases
 
-### Phase 1: Safe Starter Baseline
+### Phase 1: Professional Foundation
 
-Create the smallest working structure that Codex and a human reviewer can understand.
+Create and verify a clean baseline with documentation, tests, safety rules, and CI.
 
-Expected outputs:
+Exit criteria:
 
-- `README.md`
-- `AGENTS.md`
-- `.gitignore`
-- `RUNBOOK.md`
-- `docs/PROJECT_PLAN.md`
-- `src/main.py`
-- `tests/test_main.py`
+- Local CLI command works.
+- Local tests pass.
+- GitHub Actions test workflow is present.
+- Security and privacy boundaries are documented.
+- No third-party dependencies are required.
 
-### Phase 2: Scope Definition
+### Phase 2: Product Definition
 
-Decide what the project should do before adding architecture.
+Define the first real capability before implementation.
 
-Key questions:
+Questions to answer:
 
-- Who is the user?
-- What problem does the project solve?
-- Is this a CLI, web app, automation tool, media workflow helper, or something else?
-- What data will it handle?
-- Does it need external services, and why?
+- Who is the intended user?
+- What problem should the project solve first?
+- What input and output will the first feature handle?
+- What data must never enter the repository?
+- What should remain out of scope?
 
 ### Phase 3: Small Functional Prototype
 
-Add one useful capability with tests and documentation. Keep the implementation reversible.
+Implement one useful behavior with tests and documentation. Keep the change reversible and avoid broad architecture.
 
 ### Phase 4: Architecture Decision
 
-Only after a prototype exists, document whether the project needs a framework, database, external API, background jobs, deployment target, or authentication.
+Only after a working prototype exists, decide whether the project needs a framework, packaging, persistence, external service, deployment target, or stronger quality tooling.
 
 ## Risks
 
-- Premature architecture: choosing frameworks before the product shape is known.
-- Secret leakage: adding `.env` files, API keys, tokens, or private data.
-- Dependency bloat: adding packages before they are needed.
-- Unclear scope: building features without a written goal.
-- Untested behavior: making changes that Codex cannot verify later.
-- External service coupling: connecting to services before security and privacy expectations are documented.
-
-## Next Steps
-
-1. Review this starter branch.
-2. Confirm the intended product direction.
-3. Define the first useful feature in one paragraph.
-4. Add the smallest implementation of that feature.
-5. Add or update tests before expanding further.
+- Premature architecture: adding frameworks before the product shape is known.
+- Secret leakage: committing `.env` files, tokens, keys, credentials, or private exports.
+- Dependency bloat: adding packages before a standard-library approach is insufficient.
+- Scope drift: building features that are not tied to a written goal.
+- Unverified behavior: changing commands without updating tests or documentation.
+- External service coupling: connecting to services before privacy and security requirements are documented.
+- False capability claims: documenting features that the code does not actually provide.
 
 ## Open Decisions
 
-- Final project purpose is not yet decided.
-- Application type is not yet decided.
-- Runtime dependencies are not yet needed.
-- Deployment target is not yet decided.
+- Final product purpose is not yet selected.
+- Target user is not yet defined.
+- First real feature is not yet defined.
+- Packaging and distribution are not yet needed.
+- Deployment is not planned.
+- Third-party dependencies are not justified at this stage.
+
+## Next Milestone
+
+Write a one-paragraph product brief for the first real capability. The brief should define the user, problem, input, output, and success condition. After that, implement the smallest testable version.
+
+## Decision Rule
+
+If a proposed change requires a framework, external service, paid tool, private data, deployment configuration, or new dependency, document the decision first and ask for explicit approval before implementation.
