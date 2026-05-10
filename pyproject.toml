@@ -1,7 +1,7 @@
 [project]
 name = "my-smart-project"
 version = "0.1.0"
-description = "A minimal Codex-ready Python starter foundation."
+description = "A local Python CLI for safe video production project records."
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = []
@@ -10,5 +10,5 @@ dependencies = []
 Repository = "https://github.com/saeidalsaloum/my-smart-project"
 
 [tool.codex]
-status = "minimal-foundation"
+status = "content-command-center-v1"
 standard_library_only = true

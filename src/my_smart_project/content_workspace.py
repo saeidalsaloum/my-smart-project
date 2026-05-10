@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from my_smart_project.models import VideoProject, next_utc_iso_after, validate_slug, validate_status
+from .models import VideoProject, next_utc_iso_after, validate_slug, validate_status
 
 PROJECTS_DIR = "projects"
 EXPORTS_DIR = "exports"

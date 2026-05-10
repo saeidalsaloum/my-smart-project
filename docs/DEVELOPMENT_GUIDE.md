@@ -22,7 +22,8 @@ This guide describes how to make small, reviewable changes to `my-smart-project`
 Run these commands before review:
 
 ```bash
-python3 -m src.main
+python3 -m src.main --help
+python3 -m src.main status
 python3 -m unittest discover -s tests
 ```
 

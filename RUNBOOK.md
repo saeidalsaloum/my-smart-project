@@ -1,6 +1,6 @@
 # Runbook
 
-This runbook explains how to clone, run, test, and verify the current minimal project locally.
+This runbook explains how to clone, run, test, and verify Saeid KING Content Command Center v1 locally.
 
 ## Requirements
 
@@ -16,15 +16,15 @@ git clone https://github.com/saeidalsaloum/my-smart-project.git
 cd my-smart-project
 ```
 
-If you are reviewing a pull request branch, check it out before running commands:
+If you are reviewing the Phase 2 pull request branch, check it out before running commands:
 
 ```bash
-git checkout codex/minimal-starter
+git checkout codex/content-command-center-v1
 ```
 
 ## Optional Virtual Environment
 
-The project currently has no dependencies, so a virtual environment is optional. It can still be useful to keep local Python work isolated.
+The project currently has no dependencies, so a virtual environment is optional.
 
 ```bash
 python3 -m venv .venv
@@ -37,19 +37,100 @@ Deactivate it later with:
 deactivate
 ```
 
-## Run the CLI
+## CLI Smoke Checks
 
-From the repository root:
+Show help:
+
+```bash
+python3 -m src.main --help
+```
+
+Print the status message:
+
+```bash
+python3 -m src.main status
+```
+
+Expected status output:
+
+```text
+my-smart-project: minimal Codex-ready starter is working.
+```
+
+Running without a command is kept as a backward-compatible status alias:
 
 ```bash
 python3 -m src.main
 ```
 
-Expected output:
+## Local Content Workspace Example
+
+Create a safe local workspace:
+
+```bash
+python3 -m src.main init-workspace --path ./content-workspace
+```
+
+This creates:
 
 ```text
-my-smart-project: minimal Codex-ready starter is working.
+content-workspace/
+|-- README.md
+|-- exports/
+`-- projects/
 ```
+
+If the workspace already exists and is valid, the command exits successfully with a helpful message. If the path exists but is not a valid workspace, the command refuses to modify it.
+
+Create a video project:
+
+```bash
+python3 -m src.main new-video \
+  --workspace ./content-workspace \
+  --slug first-video \
+  --title "First Video"
+```
+
+List projects:
+
+```bash
+python3 -m src.main list-videos --workspace ./content-workspace
+```
+
+Show one project:
+
+```bash
+python3 -m src.main show-video --workspace ./content-workspace --slug first-video
+```
+
+Update status:
+
+```bash
+python3 -m src.main update-status \
+  --workspace ./content-workspace \
+  --slug first-video \
+  --status editing
+```
+
+Allowed statuses:
+
+```text
+idea research script recording editing review scheduled published archived
+```
+
+Export a Markdown brief:
+
+```bash
+python3 -m src.main export-brief --workspace ./content-workspace --slug first-video
+```
+
+The brief is written to:
+
+```text
+content-workspace/exports/first-video_brief.md
+```
+
+Existing project JSON files and existing brief files are not overwritten.
 
 ## Run Tests
 
@@ -72,7 +153,8 @@ The exact number of tests may change as the project grows.
 Use this sequence before asking for review:
 
 ```bash
-python3 -m src.main
+python3 -m src.main --help
+python3 -m src.main status
 python3 -m unittest discover -s tests
 ```
 
@@ -88,19 +170,17 @@ Install Python 3.10 or newer, then rerun the commands. On some systems the comma
 
 Run the command from the repository root. The command expects the `src/` directory to be in the current working directory.
 
-### Tests fail after changing the status message
+### Workspace path is refused
 
-Update both the implementation and the expected value in `tests/test_main.py`. The test intentionally locks the CLI's observable output.
+The CLI uses a strict-safe workspace policy. If the path exists but does not contain `projects/`, `exports/`, and `README.md`, choose a new path or manually create a valid workspace structure.
 
-### GitHub Actions fails but local tests pass
+### Project already exists
 
-Check that the workflow is running the same command documented here:
+`new-video` never overwrites an existing `<slug>.json` file. Use a new slug or review the existing project file manually.
 
-```bash
-python3 -m unittest discover -s tests
-```
+### Brief already exists
 
-If the commands diverge, update the documentation or the workflow so they match.
+`export-brief` never overwrites an existing Markdown brief. Remove or rename the existing brief manually before exporting again.
 
 ## Dependency Policy
 
