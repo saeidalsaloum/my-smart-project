@@ -2,19 +2,10 @@
 
 from __future__ import annotations
 
-PROJECT_NAME = "my-smart-project"
-STATUS_MESSAGE = f"{PROJECT_NAME}: minimal Codex-ready starter is working."
+from my_smart_project.cli import main
+from my_smart_project.models import STATUS_MESSAGE, get_status_message
 
-
-def get_status_message() -> str:
-    """Return the deterministic project status message."""
-    return STATUS_MESSAGE
-
-
-def main() -> int:
-    """Run the CLI and return a process exit code."""
-    print(get_status_message())
-    return 0
+__all__ = ["STATUS_MESSAGE", "get_status_message", "main"]
 
 
 if __name__ == "__main__":
