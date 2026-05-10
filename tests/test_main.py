@@ -1,3 +1,5 @@
+import contextlib
+import io
 import subprocess
 import sys
 import unittest
@@ -12,7 +14,13 @@ class MainCliTest(unittest.TestCase):
         self.assertEqual(get_status_message(), EXPECTED_STATUS)
 
     def test_main_returns_success_exit_code(self) -> None:
-        self.assertEqual(main(), 0)
+        output = io.StringIO()
+
+        with contextlib.redirect_stdout(output):
+            exit_code = main()
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(output.getvalue().strip(), EXPECTED_STATUS)
 
     def test_cli_prints_status_message(self) -> None:
         result = subprocess.run(
