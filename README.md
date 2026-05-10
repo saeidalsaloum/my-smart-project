@@ -54,20 +54,20 @@ No package installation is required for the current project state.
 
 ```text
 .
-├── .github/workflows/tests.yml
-├── .gitignore
-├── AGENTS.md
-├── README.md
-├── RUNBOOK.md
-├── docs/
-│   ├── DEVELOPMENT_GUIDE.md
-│   ├── PROJECT_PLAN.md
-│   └── SECURITY.md
-├── pyproject.toml
-├── src/
-│   └── main.py
-└── tests/
-    └── test_main.py
+|-- .github/workflows/tests.yml
+|-- .gitignore
+|-- AGENTS.md
+|-- README.md
+|-- RUNBOOK.md
+|-- docs/
+|   |-- DEVELOPMENT_GUIDE.md
+|   |-- PROJECT_PLAN.md
+|   `-- SECURITY.md
+|-- pyproject.toml
+|-- src/
+|   `-- main.py
+`-- tests/
+    `-- test_main.py
 ```
 
 ## Safety Model
