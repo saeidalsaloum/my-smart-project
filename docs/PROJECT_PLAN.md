@@ -4,7 +4,7 @@
 
 `my-smart-project` is a safe foundation for local, AI-assisted software development around public-safe video production workflows.
 
-Phase 2 introduces the first real capability: Saeid KING Content Command Center v1, a local CLI for managing simple video project records in JSON and exporting Markdown briefs. The tool is intentionally generic and safe for a public repository.
+Phase 2 introduced the first real capability: Saeid KING Content Command Center v1, a local CLI for managing simple video project records in JSON and exporting Markdown briefs. Phase 3A adds narrow editing for approved safe metadata fields. The tool is intentionally generic and safe for a public repository.
 
 ## Confirmed Current Scope
 
@@ -15,6 +15,7 @@ The repository currently provides:
 - Local workspace initialization with `projects/`, `exports/`, and workspace `README.md`.
 - Simple video project JSON records with safe generic fields only.
 - Project listing, detail display, status updates, and Markdown brief export.
+- Safe field editing for `core_question` and `notes`.
 - Standard-library `unittest` coverage for CLI behavior and workspace operations.
 - A GitHub Actions workflow that runs tests on `push` and `pull_request` without secrets or deployment.
 
@@ -51,7 +52,7 @@ Exit criteria met:
 
 ### Phase 2: Content Command Center v1
 
-Status: in implementation.
+Status: complete.
 
 Goal:
 
@@ -69,9 +70,15 @@ Exit criteria:
 
 ### Phase 3: Focused Field Editing
 
-Potential next milestone:
+Status: in implementation.
 
-Add small commands for editing safe project fields such as `core_question`, `notes`, and section statuses. This should remain local-only and standard-library-only.
+First milestone:
+
+Add one `update-field` command for editing only `core_question` and `notes`. This remains local-only and standard-library-only, updates `updated_at`, preserves the existing JSON schema, and does not overwrite exported briefs.
+
+Potential later milestone:
+
+Consider section status editing only after the first metadata editing workflow is reviewed in real local use.
 
 ### Phase 4: Architecture Decision
 
@@ -114,7 +121,7 @@ Default production status is `idea`. Section statuses default to `not_started`. 
 
 ## Next Milestone
 
-After v1 is reviewed, choose one narrow command for editing safe project metadata. The likely candidate is a command that updates `core_question` or `notes` without changing the repository's local-only safety model.
+After Phase 3A is reviewed, decide whether section status editing is useful enough to add without changing the repository's local-only safety model.
 
 ## Decision Rule
 

@@ -10,6 +10,7 @@ from .models import VideoProject, next_utc_iso_after, validate_slug, validate_st
 PROJECTS_DIR = "projects"
 EXPORTS_DIR = "exports"
 WORKSPACE_README = "README.md"
+EDITABLE_PROJECT_FIELDS = ("core_question", "notes")
 
 WORKSPACE_README_CONTENT = """# Saeid KING Content Workspace
 
@@ -144,6 +145,23 @@ def update_video_status(workspace_path_value: str, slug: str, status: str) -> Vi
     validate_status(status)
     project = load_video_project(workspace_path_value, slug)
     project.status = status
+    project.updated_at = next_utc_iso_after(project.updated_at)
+    save_video_project(workspace_path_value, project)
+    return project
+
+
+def update_video_field(
+    workspace_path_value: str, slug: str, field_name: str, value: str
+) -> VideoProject:
+    """Update one safe metadata field on one video project."""
+    if field_name not in EDITABLE_PROJECT_FIELDS:
+        allowed = ", ".join(EDITABLE_PROJECT_FIELDS)
+        raise WorkspaceError(
+            f"Unsupported project field '{field_name}'. Allowed fields: {allowed}."
+        )
+
+    project = load_video_project(workspace_path_value, slug)
+    setattr(project, field_name, value)
     project.updated_at = next_utc_iso_after(project.updated_at)
     save_video_project(workspace_path_value, project)
     return project

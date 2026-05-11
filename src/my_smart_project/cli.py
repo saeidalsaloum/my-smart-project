@@ -13,6 +13,7 @@ from .content_workspace import (
     init_workspace,
     list_video_projects,
     load_video_project,
+    update_video_field,
     update_video_status,
 )
 from .models import ALLOWED_STATUSES, VideoProject, get_status_message
@@ -67,6 +68,19 @@ def build_parser() -> argparse.ArgumentParser:
         choices=ALLOWED_STATUSES,
         help="New production status.",
     )
+
+    field_parser = subparsers.add_parser(
+        "update-field",
+        help="Update one safe video project metadata field.",
+    )
+    field_parser.add_argument("--workspace", required=True, help="Content workspace path.")
+    field_parser.add_argument("--slug", required=True, help="Project slug to update.")
+    field_parser.add_argument(
+        "--field",
+        required=True,
+        help="Safe metadata field to update: core_question or notes.",
+    )
+    field_parser.add_argument("--value", required=True, help="New field value.")
 
     export_parser = subparsers.add_parser(
         "export-brief",
@@ -134,6 +148,9 @@ def run_command(args: argparse.Namespace) -> str:
     if args.command == "update-status":
         project = update_video_status(args.workspace, args.slug, args.status)
         return f"Updated {project.slug} status to {project.status}."
+    if args.command == "update-field":
+        project = update_video_field(args.workspace, args.slug, args.field, args.value)
+        return f"Updated {project.slug} {args.field}."
     if args.command == "export-brief":
         path = export_project_brief(args.workspace, args.slug)
         return f"Exported brief: {path}"

@@ -40,6 +40,7 @@ my-smart-project: minimal Codex-ready starter is working.
 - Put tests under `tests/`.
 - Use clear names over abstractions.
 - Do not add dependencies unless the need is documented and approved.
+- Keep project field editing narrow: `update-field` is limited to `core_question` and `notes` unless a later milestone explicitly expands it.
 
 ## Documentation Guidelines
 
