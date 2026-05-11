@@ -2,7 +2,7 @@
 
 `my-smart-project` is a local, public-safe Python CLI for organizing generic video production work.
 
-Phase 2 introduced **Saeid KING Content Command Center v1**: a minimal command-line tool for creating local content workspaces, storing simple video project records as JSON, and exporting safe Markdown production briefs. Phase 3A adds narrow local editing for approved safe metadata fields.
+Phase 2 introduced **Saeid KING Content Command Center v1**: a minimal command-line tool for creating local content workspaces, storing simple video project records as JSON, and exporting safe Markdown production briefs. Phase 3A added narrow local editing for approved safe metadata fields. Phase 3B adds narrow section status editing.
 
 The project remains deliberately conservative. It does not connect to YouTube, Google, OpenAI, GitHub, databases, cloud services, paid tools, analytics systems, or deployment platforms.
 
@@ -27,6 +27,7 @@ The CLI can:
 - Show one project record.
 - Update a project's production status.
 - Update a project's `core_question` or `notes` field.
+- Update a project's section status fields for research, script, B-roll, editing, and publishing workflow steps.
 - Export a Markdown production brief.
 
 All records use generic fields only. Do not store real private analytics, legal material, personal data, credentials, or sensitive production files in this repository or in example workspace data.
@@ -108,6 +109,16 @@ python3 -m src.main update-field \
   --value "Draft notes here."
 ```
 
+Update a section status:
+
+```bash
+python3 -m src.main update-section-status \
+  --workspace ./content-workspace \
+  --slug first-video \
+  --section research \
+  --status in_progress
+```
+
 Export a brief:
 
 ```bash
@@ -157,6 +168,7 @@ This repository is intentionally conservative:
 - No paid services, AI APIs, databases, deployment systems, or analytics tools are configured.
 - Workspace initialization refuses unsafe existing paths and does not overwrite existing project files or exported briefs.
 - Field editing is limited to `core_question` and `notes` and rewrites only the selected project JSON file.
+- Section status editing is limited to approved section names and approved section status values, and rewrites only the selected project JSON file.
 - New architecture should be documented before implementation.
 
 ## Development Workflow
@@ -190,4 +202,4 @@ The GitHub Actions workflow runs CLI smoke checks and `unittest` on `push` and `
 
 ## Next Milestone
 
-Continue the local-only workflow carefully: review whether section status editing is useful after `core_question` and `notes` editing proves safe in real use.
+Continue the local-only workflow carefully: review whether brief export content should incorporate the new safe metadata and section statuses.

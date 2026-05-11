@@ -14,6 +14,7 @@ from .content_workspace import (
     list_video_projects,
     load_video_project,
     update_video_field,
+    update_video_section_status,
     update_video_status,
 )
 from .models import ALLOWED_STATUSES, VideoProject, get_status_message
@@ -81,6 +82,23 @@ def build_parser() -> argparse.ArgumentParser:
         help="Safe metadata field to update: core_question or notes.",
     )
     field_parser.add_argument("--value", required=True, help="New field value.")
+
+    section_parser = subparsers.add_parser(
+        "update-section-status",
+        help="Update one safe video project section status.",
+    )
+    section_parser.add_argument("--workspace", required=True, help="Content workspace path.")
+    section_parser.add_argument("--slug", required=True, help="Project slug to update.")
+    section_parser.add_argument(
+        "--section",
+        required=True,
+        help="Section to update: research, script, broll, editing, or publishing.",
+    )
+    section_parser.add_argument(
+        "--status",
+        required=True,
+        help="New section status: not_started, in_progress, blocked, or done.",
+    )
 
     export_parser = subparsers.add_parser(
         "export-brief",
@@ -151,6 +169,11 @@ def run_command(args: argparse.Namespace) -> str:
     if args.command == "update-field":
         project = update_video_field(args.workspace, args.slug, args.field, args.value)
         return f"Updated {project.slug} {args.field}."
+    if args.command == "update-section-status":
+        project = update_video_section_status(
+            args.workspace, args.slug, args.section, args.status
+        )
+        return f"Updated {project.slug} {args.section} status to {args.status}."
     if args.command == "export-brief":
         path = export_project_brief(args.workspace, args.slug)
         return f"Exported brief: {path}"

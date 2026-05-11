@@ -69,6 +69,7 @@ class MainCliTest(unittest.TestCase):
         self.assertIn("usage:", result.stdout)
         self.assertIn("status", result.stdout)
         self.assertIn("update-field", result.stdout)
+        self.assertIn("update-section-status", result.stdout)
         self.assertEqual(result.stderr, "")
 
     def test_init_workspace_new_and_existing_valid(self) -> None:
@@ -350,6 +351,184 @@ class MainCliTest(unittest.TestCase):
                 "notes",
                 "--value",
                 "Draft notes here.",
+            )
+
+            after_files = self._workspace_file_snapshots(workspace)
+            changed_files = [
+                name for name in before_files if before_files[name] != after_files[name]
+            ]
+            self.assertEqual(result.returncode, 0)
+            self.assertEqual(sorted(after_files), sorted(before_files))
+            self.assertEqual(changed_files, ["projects/first-video.json"])
+
+    def test_update_section_status_updates_each_section_preserves_schema_and_metadata(
+        self,
+    ) -> None:
+        section_cases = [
+            ("research", "research_status", "in_progress"),
+            ("script", "script_status", "done"),
+            ("broll", "broll_status", "blocked"),
+            ("editing", "editing_status", "in_progress"),
+            ("publishing", "publishing_status", "done"),
+        ]
+
+        for section, field_name, status in section_cases:
+            with self.subTest(section=section):
+                with tempfile.TemporaryDirectory() as temp_dir:
+                    workspace = self._init_workspace(temp_dir)
+                    self._new_video(workspace, "first-video", "First Video")
+                    core_question = run_cli(
+                        "update-field",
+                        "--workspace",
+                        str(workspace),
+                        "--slug",
+                        "first-video",
+                        "--field",
+                        "core_question",
+                        "--value",
+                        "Why does this topic matter?",
+                    )
+                    notes = run_cli(
+                        "update-field",
+                        "--workspace",
+                        str(workspace),
+                        "--slug",
+                        "first-video",
+                        "--field",
+                        "notes",
+                        "--value",
+                        "Draft notes here.",
+                    )
+                    self.assertEqual(core_question.returncode, 0, core_question.stderr)
+                    self.assertEqual(notes.returncode, 0, notes.stderr)
+                    project_path = workspace / "projects" / "first-video.json"
+                    before = json.loads(project_path.read_text(encoding="utf-8"))
+
+                    result = run_cli(
+                        "update-section-status",
+                        "--workspace",
+                        str(workspace),
+                        "--slug",
+                        "first-video",
+                        "--section",
+                        section,
+                        "--status",
+                        status,
+                    )
+
+                    after = json.loads(project_path.read_text(encoding="utf-8"))
+                    self.assertEqual(result.returncode, 0)
+                    self.assertEqual(
+                        result.stdout.strip(),
+                        f"Updated first-video {section} status to {status}.",
+                    )
+                    self.assertEqual(list(after.keys()), EXPECTED_FIELDS)
+                    self.assertEqual(after[field_name], status)
+                    self.assertNotEqual(after["updated_at"], before["updated_at"])
+                    self.assertEqual(after["created_at"], before["created_at"])
+                    self.assertEqual(after["slug"], before["slug"])
+                    self.assertEqual(after["title"], before["title"])
+                    self.assertEqual(after["status"], before["status"])
+                    self.assertEqual(after["core_question"], before["core_question"])
+                    self.assertEqual(after["notes"], before["notes"])
+                    for other_section, other_field_name, _ in section_cases:
+                        if other_section != section:
+                            self.assertEqual(
+                                after[other_field_name], before[other_field_name]
+                            )
+
+    def test_update_section_status_rejects_unsupported_sections(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            workspace = self._init_workspace(temp_dir)
+            self._new_video(workspace, "first-video", "First Video")
+            project_path = workspace / "projects" / "first-video.json"
+            before = project_path.read_text(encoding="utf-8")
+
+            result = run_cli(
+                "update-section-status",
+                "--workspace",
+                str(workspace),
+                "--slug",
+                "first-video",
+                "--section",
+                "thumbnail",
+                "--status",
+                "in_progress",
+            )
+
+            after = project_path.read_text(encoding="utf-8")
+            self.assertEqual(result.returncode, 1)
+            self.assertIn("Unsupported project section 'thumbnail'", result.stderr)
+            self.assertEqual(after, before)
+
+    def test_update_section_status_rejects_unsupported_status_values(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            workspace = self._init_workspace(temp_dir)
+            self._new_video(workspace, "first-video", "First Video")
+            project_path = workspace / "projects" / "first-video.json"
+            before = project_path.read_text(encoding="utf-8")
+
+            result = run_cli(
+                "update-section-status",
+                "--workspace",
+                str(workspace),
+                "--slug",
+                "first-video",
+                "--section",
+                "research",
+                "--status",
+                "reviewing",
+            )
+
+            after = project_path.read_text(encoding="utf-8")
+            self.assertEqual(result.returncode, 1)
+            self.assertIn("Unsupported section status 'reviewing'", result.stderr)
+            self.assertEqual(after, before)
+
+    def test_update_section_status_rejects_missing_project(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            workspace = self._init_workspace(temp_dir)
+
+            result = run_cli(
+                "update-section-status",
+                "--workspace",
+                str(workspace),
+                "--slug",
+                "missing-video",
+                "--section",
+                "research",
+                "--status",
+                "in_progress",
+            )
+
+            self.assertEqual(result.returncode, 1)
+            self.assertIn("Video project not found: missing-video", result.stderr)
+
+    def test_update_section_status_writes_only_target_project_json(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            workspace = self._init_workspace(temp_dir)
+            self._new_video(workspace, "first-video", "First Video")
+            self._new_video(workspace, "second-video", "Second Video")
+            export = run_cli(
+                "export-brief",
+                "--workspace",
+                str(workspace),
+                "--slug",
+                "first-video",
+            )
+            self.assertEqual(export.returncode, 0, export.stderr)
+            before_files = self._workspace_file_snapshots(workspace)
+
+            result = run_cli(
+                "update-section-status",
+                "--workspace",
+                str(workspace),
+                "--slug",
+                "first-video",
+                "--section",
+                "research",
+                "--status",
+                "in_progress",
             )
 
             after_files = self._workspace_file_snapshots(workspace)
