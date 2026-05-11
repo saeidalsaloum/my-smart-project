@@ -118,6 +118,28 @@ Allowed statuses:
 idea research script recording editing review scheduled published archived
 ```
 
+Update the core question:
+
+```bash
+python3 -m src.main update-field \
+  --workspace ./content-workspace \
+  --slug first-video \
+  --field core_question \
+  --value "Why does this topic matter?"
+```
+
+Update notes:
+
+```bash
+python3 -m src.main update-field \
+  --workspace ./content-workspace \
+  --slug first-video \
+  --field notes \
+  --value "Draft notes here."
+```
+
+Only `core_question` and `notes` are editable through `update-field`. The command updates `updated_at`, preserves the rest of the project schema, and does not rewrite exported briefs.
+
 Export a Markdown brief:
 
 ```bash
@@ -177,6 +199,10 @@ The CLI uses a strict-safe workspace policy. If the path exists but does not con
 ### Project already exists
 
 `new-video` never overwrites an existing `<slug>.json` file. Use a new slug or review the existing project file manually.
+
+### Field is not supported
+
+`update-field` only accepts `core_question` and `notes`. Other metadata, status fields, timestamps, and identifiers are intentionally protected from this command.
 
 ### Brief already exists
 

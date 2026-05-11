@@ -68,6 +68,7 @@ class MainCliTest(unittest.TestCase):
         self.assertEqual(result.returncode, 0)
         self.assertIn("usage:", result.stdout)
         self.assertIn("status", result.stdout)
+        self.assertIn("update-field", result.stdout)
         self.assertEqual(result.stderr, "")
 
     def test_init_workspace_new_and_existing_valid(self) -> None:
@@ -219,6 +220,146 @@ class MainCliTest(unittest.TestCase):
             self.assertNotEqual(result.returncode, 0)
             self.assertIn("invalid choice", result.stderr)
 
+    def test_update_field_updates_core_question_preserves_schema_and_metadata(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            workspace = self._init_workspace(temp_dir)
+            self._new_video(workspace, "first-video", "First Video")
+            project_path = workspace / "projects" / "first-video.json"
+            before = json.loads(project_path.read_text(encoding="utf-8"))
+
+            result = run_cli(
+                "update-field",
+                "--workspace",
+                str(workspace),
+                "--slug",
+                "first-video",
+                "--field",
+                "core_question",
+                "--value",
+                "Why does this topic matter?",
+            )
+
+            after = json.loads(project_path.read_text(encoding="utf-8"))
+            self.assertEqual(result.returncode, 0)
+            self.assertEqual(result.stdout.strip(), "Updated first-video core_question.")
+            self.assertEqual(list(after.keys()), EXPECTED_FIELDS)
+            self.assertEqual(after["core_question"], "Why does this topic matter?")
+            self.assertEqual(after["notes"], before["notes"])
+            self.assertNotEqual(after["updated_at"], before["updated_at"])
+            self.assertEqual(after["created_at"], before["created_at"])
+            self.assertEqual(after["slug"], before["slug"])
+            self.assertEqual(after["title"], before["title"])
+            self.assertEqual(after["status"], before["status"])
+            self.assertEqual(after["research_status"], before["research_status"])
+            self.assertEqual(after["script_status"], before["script_status"])
+            self.assertEqual(after["broll_status"], before["broll_status"])
+            self.assertEqual(after["editing_status"], before["editing_status"])
+            self.assertEqual(after["publishing_status"], before["publishing_status"])
+
+    def test_update_field_updates_notes(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            workspace = self._init_workspace(temp_dir)
+            self._new_video(workspace, "first-video", "First Video")
+            project_path = workspace / "projects" / "first-video.json"
+            before = json.loads(project_path.read_text(encoding="utf-8"))
+
+            result = run_cli(
+                "update-field",
+                "--workspace",
+                str(workspace),
+                "--slug",
+                "first-video",
+                "--field",
+                "notes",
+                "--value",
+                "Draft notes here.",
+            )
+
+            after = json.loads(project_path.read_text(encoding="utf-8"))
+            self.assertEqual(result.returncode, 0)
+            self.assertEqual(after["notes"], "Draft notes here.")
+            self.assertEqual(after["core_question"], before["core_question"])
+            self.assertNotEqual(after["updated_at"], before["updated_at"])
+            self.assertEqual(after["created_at"], before["created_at"])
+
+    def test_update_field_rejects_unsupported_fields(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            workspace = self._init_workspace(temp_dir)
+            self._new_video(workspace, "first-video", "First Video")
+            project_path = workspace / "projects" / "first-video.json"
+            before = project_path.read_text(encoding="utf-8")
+
+            result = run_cli(
+                "update-field",
+                "--workspace",
+                str(workspace),
+                "--slug",
+                "first-video",
+                "--field",
+                "title",
+                "--value",
+                "Unsafe Title Update",
+            )
+
+            after = project_path.read_text(encoding="utf-8")
+            self.assertEqual(result.returncode, 1)
+            self.assertIn("Unsupported project field 'title'", result.stderr)
+            self.assertEqual(after, before)
+
+    def test_update_field_rejects_missing_project(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            workspace = self._init_workspace(temp_dir)
+
+            result = run_cli(
+                "update-field",
+                "--workspace",
+                str(workspace),
+                "--slug",
+                "missing-video",
+                "--field",
+                "notes",
+                "--value",
+                "Draft notes here.",
+            )
+
+            self.assertEqual(result.returncode, 1)
+            self.assertIn("Video project not found: missing-video", result.stderr)
+
+    def test_update_field_writes_only_target_project_json(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            workspace = self._init_workspace(temp_dir)
+            self._new_video(workspace, "first-video", "First Video")
+            self._new_video(workspace, "second-video", "Second Video")
+            export = run_cli(
+                "export-brief",
+                "--workspace",
+                str(workspace),
+                "--slug",
+                "first-video",
+            )
+            self.assertEqual(export.returncode, 0, export.stderr)
+            before_files = self._workspace_file_snapshots(workspace)
+
+            result = run_cli(
+                "update-field",
+                "--workspace",
+                str(workspace),
+                "--slug",
+                "first-video",
+                "--field",
+                "notes",
+                "--value",
+                "Draft notes here.",
+            )
+
+            after_files = self._workspace_file_snapshots(workspace)
+            changed_files = [
+                name for name in before_files if before_files[name] != after_files[name]
+            ]
+            self.assertEqual(result.returncode, 0)
+            self.assertEqual(sorted(after_files), sorted(before_files))
+            self.assertEqual(changed_files, ["projects/first-video.json"])
+
     def test_missing_project_handling(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             workspace = self._init_workspace(temp_dir)
@@ -274,6 +415,13 @@ class MainCliTest(unittest.TestCase):
             title,
         )
         self.assertEqual(result.returncode, 0, result.stderr)
+
+    def _workspace_file_snapshots(self, workspace: Path) -> dict[str, str]:
+        return {
+            str(path.relative_to(workspace)): path.read_text(encoding="utf-8")
+            for path in sorted(workspace.rglob("*"))
+            if path.is_file()
+        }
 
 
 if __name__ == "__main__":

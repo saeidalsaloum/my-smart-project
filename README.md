@@ -2,7 +2,7 @@
 
 `my-smart-project` is a local, public-safe Python CLI for organizing generic video production work.
 
-Phase 2 introduces **Saeid KING Content Command Center v1**: a minimal command-line tool for creating local content workspaces, storing simple video project records as JSON, and exporting safe Markdown production briefs.
+Phase 2 introduced **Saeid KING Content Command Center v1**: a minimal command-line tool for creating local content workspaces, storing simple video project records as JSON, and exporting safe Markdown production briefs. Phase 3A adds narrow local editing for approved safe metadata fields.
 
 The project remains deliberately conservative. It does not connect to YouTube, Google, OpenAI, GitHub, databases, cloud services, paid tools, analytics systems, or deployment platforms.
 
@@ -26,6 +26,7 @@ The CLI can:
 - List video project records.
 - Show one project record.
 - Update a project's production status.
+- Update a project's `core_question` or `notes` field.
 - Export a Markdown production brief.
 
 All records use generic fields only. Do not store real private analytics, legal material, personal data, credentials, or sensitive production files in this repository or in example workspace data.
@@ -87,6 +88,26 @@ python3 -m src.main update-status \
   --status editing
 ```
 
+Update the core question:
+
+```bash
+python3 -m src.main update-field \
+  --workspace ./content-workspace \
+  --slug first-video \
+  --field core_question \
+  --value "Why does this topic matter?"
+```
+
+Update notes:
+
+```bash
+python3 -m src.main update-field \
+  --workspace ./content-workspace \
+  --slug first-video \
+  --field notes \
+  --value "Draft notes here."
+```
+
 Export a brief:
 
 ```bash
@@ -135,6 +156,7 @@ This repository is intentionally conservative:
 - No external service integrations are present.
 - No paid services, AI APIs, databases, deployment systems, or analytics tools are configured.
 - Workspace initialization refuses unsafe existing paths and does not overwrite existing project files or exported briefs.
+- Field editing is limited to `core_question` and `notes` and rewrites only the selected project JSON file.
 - New architecture should be documented before implementation.
 
 ## Development Workflow
@@ -168,4 +190,4 @@ The GitHub Actions workflow runs CLI smoke checks and `unittest` on `push` and `
 
 ## Next Milestone
 
-Define the next useful local workflow after v1: likely editing project fields such as core question, notes, and section statuses while preserving the same local-only, public-safe model.
+Continue the local-only workflow carefully: review whether section status editing is useful after `core_question` and `notes` editing proves safe in real use.
