@@ -2,18 +2,20 @@
 
 ## Purpose
 
-`my-smart-project` is a safe foundation for future AI-assisted software development. The current goal is to make the repository understandable, runnable, testable, and reviewable before choosing a larger product direction.
+`my-smart-project` is a safe foundation for local, AI-assisted software development around public-safe video production workflows.
 
-This plan intentionally separates confirmed scope from future possibilities so the repository does not grow by accident.
+Phase 2 introduces the first real capability: Saeid KING Content Command Center v1, a local CLI for managing simple video project records in JSON and exporting Markdown briefs. The tool is intentionally generic and safe for a public repository.
 
 ## Confirmed Current Scope
 
 The repository currently provides:
 
-- A minimal Python CLI entry point.
-- A deterministic status message.
-- Standard-library `unittest` coverage for the CLI behavior.
-- Documentation for local operation, development workflow, security rules, and future planning.
+- A Python CLI entry point at `python3 -m src.main`.
+- A status command and backward-compatible no-command status output.
+- Local workspace initialization with `projects/`, `exports/`, and workspace `README.md`.
+- Simple video project JSON records with safe generic fields only.
+- Project listing, detail display, status updates, and Markdown brief export.
+- Standard-library `unittest` coverage for CLI behavior and workspace operations.
 - A GitHub Actions workflow that runs tests on `push` and `pull_request` without secrets or deployment.
 
 ## Explicit Non-Goals
@@ -25,31 +27,21 @@ The project is not currently:
 - A database-backed system.
 - A deployment target.
 - An AI API integration.
+- A YouTube, Google, OpenAI, GitHub, cloud, or paid-service integration.
+- A real analytics processor.
 - A media processing pipeline.
 - A customer data system.
 - A legal, personal, or private document repository.
 
 Do not add those capabilities without a documented decision and explicit approval.
 
-## Future Possible Directions
-
-The project could later become one of several things, but no direction is selected yet:
-
-- A small CLI productivity tool.
-- A local automation helper.
-- A structured project template.
-- A documentation-first planning repository.
-- A later application prototype after scope is defined.
-
-The next direction should be chosen based on a written product goal, not on framework preference.
-
-## Intended Phases
+## Phase Status
 
 ### Phase 1: Professional Foundation
 
-Create and verify a clean baseline with documentation, tests, safety rules, and CI.
+Status: complete.
 
-Exit criteria:
+Exit criteria met:
 
 - Local CLI command works.
 - Local tests pass.
@@ -57,49 +49,73 @@ Exit criteria:
 - Security and privacy boundaries are documented.
 - No third-party dependencies are required.
 
-### Phase 2: Product Definition
+### Phase 2: Content Command Center v1
 
-Define the first real capability before implementation.
+Status: in implementation.
 
-Questions to answer:
+Goal:
 
-- Who is the intended user?
-- What problem should the project solve first?
-- What input and output will the first feature handle?
-- What data must never enter the repository?
-- What should remain out of scope?
+Create a useful local CLI for generic video production project records without connecting to external services or storing private data.
 
-### Phase 3: Small Functional Prototype
+Exit criteria:
 
-Implement one useful behavior with tests and documentation. Keep the change reversible and avoid broad architecture.
+- `--help` and `status` commands work.
+- Workspace initialization is safe and non-destructive.
+- New video project JSON files are created with the approved field schema.
+- Project listing, show, status update, and brief export commands work.
+- Invalid status, missing project, duplicate project, unsafe workspace, and existing brief cases are handled clearly.
+- Tests cover the required workflows.
+- Documentation reflects actual behavior.
+
+### Phase 3: Focused Field Editing
+
+Potential next milestone:
+
+Add small commands for editing safe project fields such as `core_question`, `notes`, and section statuses. This should remain local-only and standard-library-only.
 
 ### Phase 4: Architecture Decision
 
-Only after a working prototype exists, decide whether the project needs a framework, packaging, persistence, external service, deployment target, or stronger quality tooling.
+Only after repeated real local use, decide whether the project needs packaging, richer validation, import/export formats, or stronger quality tooling.
+
+## Data Model
+
+Each video project JSON file contains exactly these fields:
+
+- `slug`
+- `title`
+- `status`
+- `created_at`
+- `updated_at`
+- `core_question`
+- `research_status`
+- `script_status`
+- `broll_status`
+- `editing_status`
+- `publishing_status`
+- `notes`
+
+Default production status is `idea`. Section statuses default to `not_started`. Timestamps use UTC ISO format ending in `Z`.
 
 ## Risks
 
-- Premature architecture: adding frameworks before the product shape is known.
-- Secret leakage: committing `.env` files, tokens, keys, credentials, or private exports.
-- Dependency bloat: adding packages before a standard-library approach is insufficient.
-- Scope drift: building features that are not tied to a written goal.
-- Unverified behavior: changing commands without updating tests or documentation.
-- External service coupling: connecting to services before privacy and security requirements are documented.
-- False capability claims: documenting features that the code does not actually provide.
+- Secret leakage: committing `.env` files, tokens, keys, credentials, private exports, or real analytics.
+- Scope drift: turning the CLI into a web app, service integration, or media pipeline too early.
+- False capability claims: documenting production features that the code does not actually provide.
+- Overwriting user work: regenerating project files or briefs over manual edits.
+- Premature architecture: adding frameworks, databases, services, or dependencies before the local workflow proves useful.
+- Public repository safety: accidentally adding real personal, legal, YouTube, media, or business material.
 
 ## Open Decisions
 
-- Final product purpose is not yet selected.
-- Target user is not yet defined.
-- First real feature is not yet defined.
-- Packaging and distribution are not yet needed.
-- Deployment is not planned.
-- Third-party dependencies are not justified at this stage.
+- Whether the next feature should edit project fields, add checklist status commands, or improve brief content.
+- Whether local workspace records should later support schema versions.
+- Whether packaging is useful after the CLI stabilizes.
+- Whether additional quality tools are worth adding while keeping dependencies minimal.
 
 ## Next Milestone
 
-Write a one-paragraph product brief for the first real capability. The brief should define the user, problem, input, output, and success condition. After that, implement the smallest testable version.
+After v1 is reviewed, choose one narrow command for editing safe project metadata. The likely candidate is a command that updates `core_question` or `notes` without changing the repository's local-only safety model.
 
 ## Decision Rule
 
-If a proposed change requires a framework, external service, paid tool, private data, deployment configuration, or new dependency, document the decision first and ask for explicit approval before implementation.
+If a proposed change requires a framework, external service, paid tool, private data, deployment configuration, database, AI API, or new dependency, document the decision first and ask for explicit approval before implementation.

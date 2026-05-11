@@ -1,13 +1,16 @@
 # my-smart-project
 
-`my-smart-project` is a deliberately small Python starter repository prepared for safe, reviewable, AI-assisted development with Codex.
+`my-smart-project` is a local, public-safe Python CLI for organizing generic video production work.
 
-The project is not a production application yet. Its current purpose is to establish a clean baseline: documented scope, deterministic behavior, standard-library-only tests, and strict operating rules before larger decisions are made.
+Phase 2 introduces **Saeid KING Content Command Center v1**: a minimal command-line tool for creating local content workspaces, storing simple video project records as JSON, and exporting safe Markdown production briefs.
+
+The project remains deliberately conservative. It does not connect to YouTube, Google, OpenAI, GitHub, databases, cloud services, paid tools, analytics systems, or deployment platforms.
 
 ## Current Status
 
-- Project type: minimal Python CLI foundation
+- Project type: local Python CLI
 - Runtime: Python standard library only
+- Data storage: local JSON files in a user-chosen workspace
 - External services: none
 - Secrets required: none
 - Deployment: none
@@ -15,17 +18,17 @@ The project is not a production application yet. Its current purpose is to estab
 
 ## What It Does Today
 
-The CLI prints a single deterministic status message so the repository has a known runnable behavior and a testable contract.
+The CLI can:
 
-```bash
-python3 -m src.main
-```
+- Print the project status message.
+- Initialize a local content workspace.
+- Create simple video project JSON records.
+- List video project records.
+- Show one project record.
+- Update a project's production status.
+- Export a Markdown production brief.
 
-Expected output:
-
-```text
-my-smart-project: minimal Codex-ready starter is working.
-```
+All records use generic fields only. Do not store real private analytics, legal material, personal data, credentials, or sensitive production files in this repository or in example workspace data.
 
 ## Quick Start
 
@@ -36,19 +39,67 @@ git clone https://github.com/saeidalsaloum/my-smart-project.git
 cd my-smart-project
 ```
 
-Run the CLI:
+Show help:
 
 ```bash
-python3 -m src.main
+python3 -m src.main --help
 ```
 
-Run the tests:
+Check project status:
+
+```bash
+python3 -m src.main status
+```
+
+Initialize a local content workspace:
+
+```bash
+python3 -m src.main init-workspace --path ./content-workspace
+```
+
+Create a video project:
+
+```bash
+python3 -m src.main new-video \
+  --workspace ./content-workspace \
+  --slug first-video \
+  --title "First Video"
+```
+
+List projects:
+
+```bash
+python3 -m src.main list-videos --workspace ./content-workspace
+```
+
+Show one project:
+
+```bash
+python3 -m src.main show-video --workspace ./content-workspace --slug first-video
+```
+
+Update status:
+
+```bash
+python3 -m src.main update-status \
+  --workspace ./content-workspace \
+  --slug first-video \
+  --status editing
+```
+
+Export a brief:
+
+```bash
+python3 -m src.main export-brief --workspace ./content-workspace --slug first-video
+```
+
+Run tests:
 
 ```bash
 python3 -m unittest discover -s tests
 ```
 
-No package installation is required for the current project state.
+No package installation is required.
 
 ## Project Layout
 
@@ -65,7 +116,12 @@ No package installation is required for the current project state.
 |   `-- SECURITY.md
 |-- pyproject.toml
 |-- src/
-|   `-- main.py
+|   |-- main.py
+|   `-- my_smart_project/
+|       |-- __init__.py
+|       |-- cli.py
+|       |-- content_workspace.py
+|       `-- models.py
 `-- tests/
     `-- test_main.py
 ```
@@ -75,10 +131,11 @@ No package installation is required for the current project state.
 This repository is intentionally conservative:
 
 - No secrets, credentials, tokens, private data, or sensitive documents belong in the repository.
+- No real YouTube analytics exports, legal material, personal files, media folders, or private production archives should be added.
 - No external service integrations are present.
 - No paid services, AI APIs, databases, deployment systems, or analytics tools are configured.
+- Workspace initialization refuses unsafe existing paths and does not overwrite existing project files or exported briefs.
 - New architecture should be documented before implementation.
-- Changes should be small enough to review directly in a pull request.
 
 ## Development Workflow
 
@@ -86,7 +143,7 @@ This repository is intentionally conservative:
 2. Create or update a review branch; do not push directly to `main`.
 3. Keep the change small and aligned with `docs/PROJECT_PLAN.md`.
 4. Update documentation when behavior, commands, scope, or safety rules change.
-5. Run the CLI and tests before requesting review.
+5. Run the CLI smoke checks and tests before requesting review.
 6. Keep pull requests in draft until the human owner decides they are ready.
 
 ## Testing
@@ -94,10 +151,12 @@ This repository is intentionally conservative:
 The test suite uses Python `unittest` from the standard library.
 
 ```bash
+python3 -m src.main --help
+python3 -m src.main status
 python3 -m unittest discover -s tests
 ```
 
-The GitHub Actions workflow runs the same test command on `push` and `pull_request`. It does not deploy, publish, or require secrets.
+The GitHub Actions workflow runs CLI smoke checks and `unittest` on `push` and `pull_request`. It does not deploy, publish, or require secrets.
 
 ## Documentation
 
@@ -109,4 +168,4 @@ The GitHub Actions workflow runs the same test command on `push` and `pull_reque
 
 ## Next Milestone
 
-Define the first real product capability in one paragraph, then implement the smallest testable version without adding frameworks, external services, or broad architecture prematurely.
+Define the next useful local workflow after v1: likely editing project fields such as core question, notes, and section statuses while preserving the same local-only, public-safe model.
