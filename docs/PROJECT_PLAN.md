@@ -4,7 +4,7 @@
 
 `my-smart-project` is a safe foundation for local, AI-assisted software development around public-safe video production workflows.
 
-Phase 2 introduced the first real capability: Saeid KING Content Command Center v1, a local CLI for managing simple video project records in JSON and exporting Markdown briefs. Phase 3A adds narrow editing for approved safe metadata fields. The tool is intentionally generic and safe for a public repository.
+Phase 2 introduced the first real capability: Saeid KING Content Command Center v1, a local CLI for managing simple video project records in JSON and exporting Markdown briefs. Phase 3A added narrow editing for approved safe metadata fields. Phase 3B adds narrow editing for approved section status fields. The tool is intentionally generic and safe for a public repository.
 
 ## Confirmed Current Scope
 
@@ -16,6 +16,7 @@ The repository currently provides:
 - Simple video project JSON records with safe generic fields only.
 - Project listing, detail display, status updates, and Markdown brief export.
 - Safe field editing for `core_question` and `notes`.
+- Safe section status editing for research, script, B-roll, editing, and publishing workflow steps.
 - Standard-library `unittest` coverage for CLI behavior and workspace operations.
 - A GitHub Actions workflow that runs tests on `push` and `pull_request` without secrets or deployment.
 
@@ -68,17 +69,17 @@ Exit criteria:
 - Tests cover the required workflows.
 - Documentation reflects actual behavior.
 
-### Phase 3: Focused Field Editing
+### Phase 3: Focused Local Editing
 
 Status: in implementation.
 
-First milestone:
+Completed milestone:
 
 Add one `update-field` command for editing only `core_question` and `notes`. This remains local-only and standard-library-only, updates `updated_at`, preserves the existing JSON schema, and does not overwrite exported briefs.
 
-Potential later milestone:
+Current milestone:
 
-Consider section status editing only after the first metadata editing workflow is reviewed in real local use.
+Add one `update-section-status` command for editing only approved section status fields. This remains local-only and standard-library-only, updates `updated_at`, preserves the existing JSON schema, and does not overwrite exported briefs.
 
 ### Phase 4: Architecture Decision
 
@@ -121,7 +122,7 @@ Default production status is `idea`. Section statuses default to `not_started`. 
 
 ## Next Milestone
 
-After Phase 3A is reviewed, decide whether section status editing is useful enough to add without changing the repository's local-only safety model.
+After Phase 3B is reviewed, decide whether brief export content should include the safe metadata and section status values without changing the repository's local-only safety model.
 
 ## Decision Rule
 

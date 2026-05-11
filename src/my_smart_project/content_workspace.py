@@ -11,6 +11,14 @@ PROJECTS_DIR = "projects"
 EXPORTS_DIR = "exports"
 WORKSPACE_README = "README.md"
 EDITABLE_PROJECT_FIELDS = ("core_question", "notes")
+SECTION_STATUS_FIELDS = {
+    "research": "research_status",
+    "script": "script_status",
+    "broll": "broll_status",
+    "editing": "editing_status",
+    "publishing": "publishing_status",
+}
+ALLOWED_SECTION_STATUSES = ("not_started", "in_progress", "blocked", "done")
 
 WORKSPACE_README_CONTENT = """# Saeid KING Content Workspace
 
@@ -162,6 +170,28 @@ def update_video_field(
 
     project = load_video_project(workspace_path_value, slug)
     setattr(project, field_name, value)
+    project.updated_at = next_utc_iso_after(project.updated_at)
+    save_video_project(workspace_path_value, project)
+    return project
+
+
+def update_video_section_status(
+    workspace_path_value: str, slug: str, section: str, status: str
+) -> VideoProject:
+    """Update one safe section status on one video project."""
+    if section not in SECTION_STATUS_FIELDS:
+        allowed = ", ".join(SECTION_STATUS_FIELDS)
+        raise WorkspaceError(
+            f"Unsupported project section '{section}'. Allowed sections: {allowed}."
+        )
+    if status not in ALLOWED_SECTION_STATUSES:
+        allowed = ", ".join(ALLOWED_SECTION_STATUSES)
+        raise WorkspaceError(
+            f"Unsupported section status '{status}'. Allowed statuses: {allowed}."
+        )
+
+    project = load_video_project(workspace_path_value, slug)
+    setattr(project, SECTION_STATUS_FIELDS[section], status)
     project.updated_at = next_utc_iso_after(project.updated_at)
     save_video_project(workspace_path_value, project)
     return project

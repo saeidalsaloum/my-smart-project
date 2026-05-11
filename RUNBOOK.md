@@ -140,6 +140,30 @@ python3 -m src.main update-field \
 
 Only `core_question` and `notes` are editable through `update-field`. The command updates `updated_at`, preserves the rest of the project schema, and does not rewrite exported briefs.
 
+Update a section status:
+
+```bash
+python3 -m src.main update-section-status \
+  --workspace ./content-workspace \
+  --slug first-video \
+  --section research \
+  --status in_progress
+```
+
+Allowed sections:
+
+```text
+research script broll editing publishing
+```
+
+Allowed section status values:
+
+```text
+not_started in_progress blocked done
+```
+
+`update-section-status` updates only the mapped section status field, updates `updated_at`, preserves the rest of the project schema, and does not rewrite exported briefs.
+
 Export a Markdown brief:
 
 ```bash
@@ -203,6 +227,10 @@ The CLI uses a strict-safe workspace policy. If the path exists but does not con
 ### Field is not supported
 
 `update-field` only accepts `core_question` and `notes`. Other metadata, status fields, timestamps, and identifiers are intentionally protected from this command.
+
+### Section or section status is not supported
+
+`update-section-status` only accepts the approved sections and section status values listed above. Project identifiers, title, production status, metadata fields, timestamps, and unrelated section statuses are intentionally protected from this command.
 
 ### Brief already exists
 
