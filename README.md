@@ -82,6 +82,7 @@ python3 -m src.main overview-videos --workspace ./content-workspace
 ```
 
 The overview shows each project's slug, production status, section statuses, and title without changing project JSON files.
+Add `--status <status>` to show only projects with one production status, such as `editing` or `review`.
 
 Show one project:
 

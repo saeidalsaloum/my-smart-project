@@ -170,6 +170,16 @@ class MainCliTest(unittest.TestCase):
             empty = run_cli("overview-videos", "--workspace", str(workspace))
             self._new_video(workspace, "z-video", "Z Video")
             self._new_video(workspace, "a-video", "A Video")
+            status_update = run_cli(
+                "update-status",
+                "--workspace",
+                str(workspace),
+                "--slug",
+                "z-video",
+                "--status",
+                "editing",
+            )
+            self.assertEqual(status_update.returncode, 0, status_update.stderr)
             updates = [
                 ("a-video", "research", "in_progress"),
                 ("a-video", "script", "done"),
@@ -192,10 +202,18 @@ class MainCliTest(unittest.TestCase):
                 self.assertEqual(result.returncode, 0, result.stderr)
 
             overview = run_cli("overview-videos", "--workspace", str(workspace))
+            filtered = run_cli(
+                "overview-videos",
+                "--workspace",
+                str(workspace),
+                "--status",
+                "editing",
+            )
 
             self.assertEqual(empty.returncode, 0)
             self.assertIn("No video projects found.", empty.stdout)
             self.assertEqual(overview.returncode, 0, overview.stderr)
+            self.assertEqual(filtered.returncode, 0, filtered.stderr)
             lines = overview.stdout.splitlines()
             self.assertEqual(
                 lines[0].split(maxsplit=7),
@@ -233,7 +251,7 @@ class MainCliTest(unittest.TestCase):
                 z_video_row.split(maxsplit=7),
                 [
                     "z-video",
-                    "idea",
+                    "editing",
                     "not_started",
                     "not_started",
                     "blocked",
@@ -242,6 +260,26 @@ class MainCliTest(unittest.TestCase):
                     "Z Video",
                 ],
             )
+            self.assertIn("z-video", filtered.stdout)
+            self.assertIn("editing", filtered.stdout)
+            self.assertIn("Z Video", filtered.stdout)
+            self.assertNotIn("a-video", filtered.stdout)
+            self.assertNotIn("A Video", filtered.stdout)
+
+    def test_overview_videos_rejects_invalid_status_filter(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            workspace = self._init_workspace(temp_dir)
+
+            result = run_cli(
+                "overview-videos",
+                "--workspace",
+                str(workspace),
+                "--status",
+                "blocked",
+            )
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("invalid choice", result.stderr)
 
     def test_show_video_prints_project_detail(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
