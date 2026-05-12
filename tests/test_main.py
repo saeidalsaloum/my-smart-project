@@ -504,6 +504,92 @@ class MainCliTest(unittest.TestCase):
             self.assertEqual(result.returncode, 1)
             self.assertIn("Video project not found: missing-video", result.stderr)
 
+    def test_update_section_status_repeated_same_status_bumps_updated_at(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            workspace = self._init_workspace(temp_dir)
+            self._new_video(workspace, "first-video", "First Video")
+            project_path = workspace / "projects" / "first-video.json"
+
+            first = run_cli(
+                "update-section-status",
+                "--workspace",
+                str(workspace),
+                "--slug",
+                "first-video",
+                "--section",
+                "research",
+                "--status",
+                "in_progress",
+            )
+            before_repeat_text = project_path.read_text(encoding="utf-8")
+            before_repeat = json.loads(before_repeat_text)
+
+            second = run_cli(
+                "update-section-status",
+                "--workspace",
+                str(workspace),
+                "--slug",
+                "first-video",
+                "--section",
+                "research",
+                "--status",
+                "in_progress",
+            )
+
+            after_repeat_text = project_path.read_text(encoding="utf-8")
+            after_repeat = json.loads(after_repeat_text)
+            self.assertEqual(first.returncode, 0, first.stderr)
+            self.assertEqual(second.returncode, 0, second.stderr)
+            self.assertEqual(after_repeat["research_status"], "in_progress")
+            self.assertNotEqual(after_repeat_text, before_repeat_text)
+            self.assertNotEqual(
+                after_repeat["updated_at"], before_repeat["updated_at"]
+            )
+            for field_name in EXPECTED_FIELDS:
+                if field_name != "updated_at":
+                    self.assertEqual(after_repeat[field_name], before_repeat[field_name])
+
+    def test_update_section_status_can_return_section_to_not_started(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            workspace = self._init_workspace(temp_dir)
+            self._new_video(workspace, "first-video", "First Video")
+            project_path = workspace / "projects" / "first-video.json"
+
+            first = run_cli(
+                "update-section-status",
+                "--workspace",
+                str(workspace),
+                "--slug",
+                "first-video",
+                "--section",
+                "research",
+                "--status",
+                "in_progress",
+            )
+            before_return = json.loads(project_path.read_text(encoding="utf-8"))
+
+            second = run_cli(
+                "update-section-status",
+                "--workspace",
+                str(workspace),
+                "--slug",
+                "first-video",
+                "--section",
+                "research",
+                "--status",
+                "not_started",
+            )
+
+            after_return = json.loads(project_path.read_text(encoding="utf-8"))
+            self.assertEqual(first.returncode, 0, first.stderr)
+            self.assertEqual(second.returncode, 0, second.stderr)
+            self.assertEqual(after_return["research_status"], "not_started")
+            self.assertNotEqual(after_return["updated_at"], before_return["updated_at"])
+            self.assertEqual(after_return["created_at"], before_return["created_at"])
+            self.assertEqual(after_return["slug"], before_return["slug"])
+            self.assertEqual(after_return["title"], before_return["title"])
+            self.assertEqual(after_return["status"], before_return["status"])
+
     def test_update_section_status_writes_only_target_project_json(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             workspace = self._init_workspace(temp_dir)

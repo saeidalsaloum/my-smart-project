@@ -16,10 +16,10 @@ git clone https://github.com/saeidalsaloum/my-smart-project.git
 cd my-smart-project
 ```
 
-If you are reviewing the Phase 2 pull request branch, check it out before running commands:
+If you are reviewing a pull request branch, check out the branch named in the PR before running commands:
 
 ```bash
-git checkout codex/content-command-center-v1
+git checkout <branch-name>
 ```
 
 ## Optional Virtual Environment
