@@ -97,6 +97,16 @@ List projects:
 python3 -m src.main list-videos --workspace ./content-workspace
 ```
 
+Show a compact workflow overview:
+
+```bash
+python3 -m src.main overview-videos --workspace ./content-workspace
+```
+
+The overview is read-only and shows each project's slug, production status,
+research status, script status, B-roll status, editing status, publishing
+status, and title.
+
 Show one project:
 
 ```bash

@@ -24,6 +24,7 @@ The CLI can:
 - Initialize a local content workspace.
 - Create simple video project JSON records.
 - List video project records.
+- Show a compact project workflow overview.
 - Show one project record.
 - Update a project's production status.
 - Update a project's `core_question` or `notes` field.
@@ -73,6 +74,14 @@ List projects:
 ```bash
 python3 -m src.main list-videos --workspace ./content-workspace
 ```
+
+Show a compact workflow overview:
+
+```bash
+python3 -m src.main overview-videos --workspace ./content-workspace
+```
+
+The overview shows each project's slug, production status, section statuses, and title without changing project JSON files.
 
 Show one project:
 
@@ -172,6 +181,7 @@ This repository is intentionally conservative:
 - No external service integrations are present.
 - No paid services, AI APIs, databases, deployment systems, or analytics tools are configured.
 - Workspace initialization refuses unsafe existing paths and does not overwrite existing project files or exported briefs.
+- Project overview is read-only and does not modify project JSON files.
 - Field editing is limited to `core_question` and `notes` and rewrites only the selected project JSON file.
 - Section status editing is limited to approved section names and approved section status values, and rewrites only the selected project JSON file.
 - Brief export includes only safe project metadata, section statuses, the core question, and production-planning headings.
