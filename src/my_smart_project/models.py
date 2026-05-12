@@ -22,6 +22,14 @@ ALLOWED_STATUSES = (
     "archived",
 )
 SECTION_STATUS_NOT_STARTED = "not_started"
+SECTION_STATUS_FIELDS = {
+    "research": "research_status",
+    "script": "script_status",
+    "broll": "broll_status",
+    "editing": "editing_status",
+    "publishing": "publishing_status",
+}
+ALLOWED_SECTION_STATUSES = ("not_started", "in_progress", "blocked", "done")
 SLUG_PATTERN = re.compile(r"^[a-z0-9_-]+$")
 
 
@@ -59,6 +67,17 @@ def validate_status(status: str) -> str:
     if status not in ALLOWED_STATUSES:
         allowed = ", ".join(ALLOWED_STATUSES)
         raise ValueError(f"Invalid status '{status}'. Allowed statuses: {allowed}.")
+    return status
+
+
+def validate_section_status(field_name: str, status: str) -> str:
+    """Validate and return an allowed section status."""
+    if status not in ALLOWED_SECTION_STATUSES:
+        allowed = ", ".join(ALLOWED_SECTION_STATUSES)
+        raise ValueError(
+            f"Invalid section status '{status}' for {field_name}. "
+            f"Allowed statuses: {allowed}."
+        )
     return status
 
 
@@ -119,6 +138,8 @@ class VideoProject:
         project = cls(**{name: data[name] for name in expected_fields})
         validate_slug(project.slug)
         validate_status(project.status)
+        for field_name in SECTION_STATUS_FIELDS.values():
+            validate_section_status(field_name, getattr(project, field_name))
         return project
 
     def to_dict(self) -> dict[str, str]:
