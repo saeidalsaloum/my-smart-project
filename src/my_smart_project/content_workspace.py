@@ -5,20 +5,19 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from .models import VideoProject, next_utc_iso_after, validate_slug, validate_status
+from .models import (
+    ALLOWED_SECTION_STATUSES,
+    SECTION_STATUS_FIELDS,
+    VideoProject,
+    next_utc_iso_after,
+    validate_slug,
+    validate_status,
+)
 
 PROJECTS_DIR = "projects"
 EXPORTS_DIR = "exports"
 WORKSPACE_README = "README.md"
 EDITABLE_PROJECT_FIELDS = ("core_question", "notes")
-SECTION_STATUS_FIELDS = {
-    "research": "research_status",
-    "script": "script_status",
-    "broll": "broll_status",
-    "editing": "editing_status",
-    "publishing": "publishing_status",
-}
-ALLOWED_SECTION_STATUSES = ("not_started", "in_progress", "blocked", "done")
 
 WORKSPACE_README_CONTENT = """# Saeid KING Content Workspace
 

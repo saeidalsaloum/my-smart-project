@@ -590,6 +590,117 @@ class MainCliTest(unittest.TestCase):
             self.assertEqual(after_return["title"], before_return["title"])
             self.assertEqual(after_return["status"], before_return["status"])
 
+    def test_show_video_rejects_corrupted_stored_section_statuses(self) -> None:
+        section_status_fields = [
+            "research_status",
+            "script_status",
+            "broll_status",
+            "editing_status",
+            "publishing_status",
+        ]
+
+        for field_name in section_status_fields:
+            with self.subTest(field_name=field_name):
+                with tempfile.TemporaryDirectory() as temp_dir:
+                    workspace = self._init_workspace(temp_dir)
+                    self._new_video(workspace, "first-video", "First Video")
+                    project_path = workspace / "projects" / "first-video.json"
+                    data = json.loads(project_path.read_text(encoding="utf-8"))
+                    data[field_name] = "reviewing"
+                    corrupted = json.dumps(data, indent=2) + "\n"
+                    project_path.write_text(corrupted, encoding="utf-8")
+
+                    result = run_cli(
+                        "show-video",
+                        "--workspace",
+                        str(workspace),
+                        "--slug",
+                        "first-video",
+                    )
+
+                    after = project_path.read_text(encoding="utf-8")
+                    self.assertEqual(result.returncode, 1)
+                    self.assertIn("Invalid project file", result.stderr)
+                    self.assertIn(
+                        f"Invalid section status 'reviewing' for {field_name}",
+                        result.stderr,
+                    )
+                    self.assertEqual(after, corrupted)
+
+    def test_update_section_status_rejects_corrupted_stored_status_before_write(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            workspace = self._init_workspace(temp_dir)
+            self._new_video(workspace, "first-video", "First Video")
+            project_path = workspace / "projects" / "first-video.json"
+            data = json.loads(project_path.read_text(encoding="utf-8"))
+            data["script_status"] = "reviewing"
+            corrupted = json.dumps(data, indent=2) + "\n"
+            project_path.write_text(corrupted, encoding="utf-8")
+
+            result = run_cli(
+                "update-section-status",
+                "--workspace",
+                str(workspace),
+                "--slug",
+                "first-video",
+                "--section",
+                "research",
+                "--status",
+                "in_progress",
+            )
+
+            after = project_path.read_text(encoding="utf-8")
+            self.assertEqual(result.returncode, 1)
+            self.assertIn("Invalid project file", result.stderr)
+            self.assertIn(
+                "Invalid section status 'reviewing' for script_status",
+                result.stderr,
+            )
+            self.assertEqual(after, corrupted)
+
+    def test_show_video_loads_stored_projects_with_allowed_section_statuses(
+        self,
+    ) -> None:
+        allowed_statuses = ["not_started", "in_progress", "blocked", "done"]
+        section_status_fields = [
+            "research_status",
+            "script_status",
+            "broll_status",
+            "editing_status",
+            "publishing_status",
+        ]
+
+        for status in allowed_statuses:
+            with self.subTest(status=status):
+                with tempfile.TemporaryDirectory() as temp_dir:
+                    workspace = self._init_workspace(temp_dir)
+                    self._new_video(workspace, "first-video", "First Video")
+                    project_path = workspace / "projects" / "first-video.json"
+                    data = json.loads(project_path.read_text(encoding="utf-8"))
+                    for field_name in section_status_fields:
+                        data[field_name] = status
+                    project_path.write_text(
+                        json.dumps(data, indent=2) + "\n",
+                        encoding="utf-8",
+                    )
+
+                    result = run_cli(
+                        "show-video",
+                        "--workspace",
+                        str(workspace),
+                        "--slug",
+                        "first-video",
+                    )
+
+                    self.assertEqual(result.returncode, 0, result.stderr)
+                    self.assertIn(f"Research Status: {status}", result.stdout)
+                    self.assertIn(f"Script Status: {status}", result.stdout)
+                    self.assertIn(f"B-roll Status: {status}", result.stdout)
+                    self.assertIn(f"Editing Status: {status}", result.stdout)
+                    self.assertIn(f"Publishing Status: {status}", result.stdout)
+
     def test_update_section_status_writes_only_target_project_json(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             workspace = self._init_workspace(temp_dir)

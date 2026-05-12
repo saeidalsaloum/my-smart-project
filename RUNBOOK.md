@@ -232,6 +232,10 @@ The CLI uses a strict-safe workspace policy. If the path exists but does not con
 
 `update-section-status` only accepts the approved sections and section status values listed above. Project identifiers, title, production status, metadata fields, timestamps, and unrelated section statuses are intentionally protected from this command.
 
+### Project file is invalid
+
+Project JSON files with missing fields, unexpected fields, invalid production statuses, or invalid stored section statuses are rejected. The CLI does not repair, normalize, or rewrite invalid project JSON automatically.
+
 ### Brief already exists
 
 `export-brief` never overwrites an existing Markdown brief. Remove or rename the existing brief manually before exporting again.
