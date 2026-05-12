@@ -208,4 +208,4 @@ The GitHub Actions workflow runs CLI smoke checks and `unittest` on `push` and `
 
 ## Next Milestone
 
-Continue the local-only workflow carefully: review whether brief export content should incorporate the new safe metadata and section statuses.
+Complete the PR #7 review gate, mark PR #7 ready for review only after the gate passes, then wait for GitHub Actions before merge.
