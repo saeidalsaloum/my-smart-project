@@ -2,7 +2,7 @@
 
 `my-smart-project` is a local, public-safe Python CLI for organizing generic video production work.
 
-Phase 2 introduced **Saeid KING Content Command Center v1**: a minimal command-line tool for creating local content workspaces, storing simple video project records as JSON, and exporting safe Markdown production briefs. Phase 3A added narrow local editing for approved safe metadata fields. Phase 3B adds narrow section status editing.
+Phase 2 introduced **Saeid KING Content Command Center v1**: a minimal command-line tool for creating local content workspaces, storing simple video project records as JSON, and exporting safe Markdown production briefs. Phase 3 added narrow local editing, section status hardening, richer brief exports, and a read-only workflow overview with optional production-status filtering.
 
 The project remains deliberately conservative. It does not connect to YouTube, Google, OpenAI, GitHub, databases, cloud services, paid tools, analytics systems, or deployment platforms.
 
@@ -219,4 +219,4 @@ The GitHub Actions workflow runs CLI smoke checks and `unittest` on `push` and `
 
 ## Next Milestone
 
-Complete the PR #7 review gate, mark PR #7 ready for review only after the gate passes, then wait for GitHub Actions before merge.
+Complete the Phase 3H review gate, keep the branch in draft until the gate passes, then wait for GitHub Actions before merge.

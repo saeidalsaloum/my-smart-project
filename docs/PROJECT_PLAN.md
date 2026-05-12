@@ -4,7 +4,7 @@
 
 `my-smart-project` is a safe foundation for local, AI-assisted software development around public-safe video production workflows.
 
-Phase 2 introduced the first real capability: Saeid KING Content Command Center v1, a local CLI for managing simple video project records in JSON and exporting Markdown briefs. Phase 3A added narrow editing for approved safe metadata fields. Phase 3B adds narrow editing for approved section status fields. The tool is intentionally generic and safe for a public repository.
+Phase 2 introduced the first real capability: Saeid KING Content Command Center v1, a local CLI for managing simple video project records in JSON and exporting Markdown briefs. Phase 3 added narrow editing, stored status validation, richer brief exports, and read-only overview filtering. The tool is intentionally generic and safe for a public repository.
 
 ## Confirmed Current Scope
 
@@ -69,17 +69,21 @@ Exit criteria:
 - Tests cover the required workflows.
 - Documentation reflects actual behavior.
 
-### Phase 3: Focused Local Editing
+### Phase 3: Focused Local Workflow Improvements
 
-Status: in implementation.
+Status: ongoing through small gated PRs.
 
-Completed milestone:
+Completed milestones:
 
-Add one `update-field` command for editing only `core_question` and `notes`. This remains local-only and standard-library-only, updates `updated_at`, preserves the existing JSON schema, and does not overwrite exported briefs.
+- Add one `update-field` command for editing only `core_question` and `notes`.
+- Add one `update-section-status` command for editing only approved section status fields.
+- Validate stored section statuses when loading project JSON.
+- Add safe project metadata and section statuses to exported Markdown briefs.
+- Add a read-only `overview-videos` command and optional production-status filtering.
 
 Current milestone:
 
-Add one `update-section-status` command for editing only approved section status fields. This remains local-only and standard-library-only, updates `updated_at`, preserves the existing JSON schema, and does not overwrite exported briefs.
+Phase 3H keeps documentation aligned with the merged local CLI workflow before choosing the next small improvement.
 
 ### Phase 4: Architecture Decision
 
@@ -122,7 +126,7 @@ Default production status is `idea`. Section statuses default to `not_started`. 
 
 ## Next Milestone
 
-After Phase 3G is reviewed, decide the next small local-only improvement without changing the repository's safety model, JSON schema, dependencies, workflows, or external-integration boundaries.
+After Phase 3H is reviewed, decide the next small local-only improvement without changing the repository's safety model, JSON schema, dependencies, workflows, or external-integration boundaries.
 
 ## Decision Rule
 
