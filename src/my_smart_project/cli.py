@@ -55,6 +55,11 @@ def build_parser() -> argparse.ArgumentParser:
         help="Show a compact workflow overview for video projects.",
     )
     overview_parser.add_argument("--workspace", required=True, help="Content workspace path.")
+    overview_parser.add_argument(
+        "--status",
+        choices=ALLOWED_STATUSES,
+        help="Optional production status filter.",
+    )
 
     show_parser = subparsers.add_parser(
         "show-video",
@@ -225,7 +230,12 @@ def run_command(args: argparse.Namespace) -> str:
     if args.command == "list-videos":
         return format_video_list(list_video_projects(args.workspace))
     if args.command == "overview-videos":
-        return format_video_overview(list_video_projects(args.workspace))
+        projects = list_video_projects(args.workspace)
+        if args.status is not None:
+            projects = [
+                project for project in projects if project.status == args.status
+            ]
+        return format_video_overview(projects)
     if args.command == "show-video":
         return format_video_detail(load_video_project(args.workspace, args.slug))
     if args.command == "update-status":

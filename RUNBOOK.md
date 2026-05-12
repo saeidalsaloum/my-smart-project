@@ -107,6 +107,12 @@ The overview is read-only and shows each project's slug, production status,
 research status, script status, B-roll status, editing status, publishing
 status, and title.
 
+Filter the overview by production status:
+
+```bash
+python3 -m src.main overview-videos --workspace ./content-workspace --status editing
+```
+
 Show one project:
 
 ```bash
