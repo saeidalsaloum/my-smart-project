@@ -50,6 +50,12 @@ def build_parser() -> argparse.ArgumentParser:
     )
     list_parser.add_argument("--workspace", required=True, help="Content workspace path.")
 
+    overview_parser = subparsers.add_parser(
+        "overview-videos",
+        help="Show a compact workflow overview for video projects.",
+    )
+    overview_parser.add_argument("--workspace", required=True, help="Content workspace path.")
+
     show_parser = subparsers.add_parser(
         "show-video",
         help="Show one video project record.",
@@ -130,6 +136,63 @@ def format_video_list(projects: list[VideoProject]) -> str:
     return "\n".join(lines)
 
 
+def format_video_overview(projects: list[VideoProject]) -> str:
+    """Return a compact table-like workflow overview."""
+    if not projects:
+        return "No video projects found."
+
+    rows = [
+        (
+            "SLUG",
+            "STATUS",
+            "RESEARCH",
+            "SCRIPT",
+            "B-ROLL",
+            "EDITING",
+            "PUBLISHING",
+            "TITLE",
+        )
+    ]
+    rows.extend(
+        (
+            project.slug,
+            project.status,
+            project.research_status,
+            project.script_status,
+            project.broll_status,
+            project.editing_status,
+            project.publishing_status,
+            project.title,
+        )
+        for project in projects
+    )
+    widths = [max(len(row[index]) for row in rows) for index in range(8)]
+
+    lines = [
+        (
+            f"{rows[0][0]:<{widths[0]}}  {rows[0][1]:<{widths[1]}}  "
+            f"{rows[0][2]:<{widths[2]}}  {rows[0][3]:<{widths[3]}}  "
+            f"{rows[0][4]:<{widths[4]}}  {rows[0][5]:<{widths[5]}}  "
+            f"{rows[0][6]:<{widths[6]}}  {rows[0][7]}"
+        ),
+        (
+            f"{'-' * widths[0]}  {'-' * widths[1]}  {'-' * widths[2]}  "
+            f"{'-' * widths[3]}  {'-' * widths[4]}  {'-' * widths[5]}  "
+            f"{'-' * widths[6]}  {'-' * widths[7]}"
+        ),
+    ]
+    lines.extend(
+        (
+            f"{slug:<{widths[0]}}  {status:<{widths[1]}}  "
+            f"{research:<{widths[2]}}  {script:<{widths[3]}}  "
+            f"{broll:<{widths[4]}}  {editing:<{widths[5]}}  "
+            f"{publishing:<{widths[6]}}  {title}"
+        )
+        for slug, status, research, script, broll, editing, publishing, title in rows[1:]
+    )
+    return "\n".join(lines)
+
+
 def format_video_detail(project: VideoProject) -> str:
     """Return readable details for one video project."""
     return "\n".join(
@@ -161,6 +224,8 @@ def run_command(args: argparse.Namespace) -> str:
         return f"Created video project: {path}"
     if args.command == "list-videos":
         return format_video_list(list_video_projects(args.workspace))
+    if args.command == "overview-videos":
+        return format_video_overview(list_video_projects(args.workspace))
     if args.command == "show-video":
         return format_video_detail(load_video_project(args.workspace, args.slug))
     if args.command == "update-status":

@@ -70,6 +70,7 @@ class MainCliTest(unittest.TestCase):
         self.assertIn("status", result.stdout)
         self.assertIn("update-field", result.stdout)
         self.assertIn("update-section-status", result.stdout)
+        self.assertIn("overview-videos", result.stdout)
         self.assertEqual(result.stderr, "")
 
     def test_init_workspace_new_and_existing_valid(self) -> None:
@@ -159,7 +160,88 @@ class MainCliTest(unittest.TestCase):
             self.assertIn("No video projects found.", empty.stdout)
             self.assertEqual(listed.returncode, 0)
             self.assertIn("SLUG", listed.stdout)
+            self.assertNotIn("RESEARCH", listed.stdout)
             self.assertLess(listed.stdout.index("a-video"), listed.stdout.index("z-video"))
+
+    def test_overview_videos_empty_and_section_status_summary(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            workspace = self._init_workspace(temp_dir)
+
+            empty = run_cli("overview-videos", "--workspace", str(workspace))
+            self._new_video(workspace, "z-video", "Z Video")
+            self._new_video(workspace, "a-video", "A Video")
+            updates = [
+                ("a-video", "research", "in_progress"),
+                ("a-video", "script", "done"),
+                ("z-video", "broll", "blocked"),
+                ("z-video", "editing", "in_progress"),
+                ("z-video", "publishing", "done"),
+            ]
+            for slug, section, status in updates:
+                result = run_cli(
+                    "update-section-status",
+                    "--workspace",
+                    str(workspace),
+                    "--slug",
+                    slug,
+                    "--section",
+                    section,
+                    "--status",
+                    status,
+                )
+                self.assertEqual(result.returncode, 0, result.stderr)
+
+            overview = run_cli("overview-videos", "--workspace", str(workspace))
+
+            self.assertEqual(empty.returncode, 0)
+            self.assertIn("No video projects found.", empty.stdout)
+            self.assertEqual(overview.returncode, 0, overview.stderr)
+            lines = overview.stdout.splitlines()
+            self.assertEqual(
+                lines[0].split(maxsplit=7),
+                [
+                    "SLUG",
+                    "STATUS",
+                    "RESEARCH",
+                    "SCRIPT",
+                    "B-ROLL",
+                    "EDITING",
+                    "PUBLISHING",
+                    "TITLE",
+                ],
+            )
+            self.assertLess(
+                overview.stdout.index("a-video"),
+                overview.stdout.index("z-video"),
+            )
+            a_video_row = next(line for line in lines if line.startswith("a-video"))
+            z_video_row = next(line for line in lines if line.startswith("z-video"))
+            self.assertEqual(
+                a_video_row.split(maxsplit=7),
+                [
+                    "a-video",
+                    "idea",
+                    "in_progress",
+                    "done",
+                    "not_started",
+                    "not_started",
+                    "not_started",
+                    "A Video",
+                ],
+            )
+            self.assertEqual(
+                z_video_row.split(maxsplit=7),
+                [
+                    "z-video",
+                    "idea",
+                    "not_started",
+                    "not_started",
+                    "blocked",
+                    "in_progress",
+                    "done",
+                    "Z Video",
+                ],
+            )
 
     def test_show_video_prints_project_detail(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

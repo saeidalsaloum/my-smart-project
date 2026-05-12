@@ -14,7 +14,7 @@ The repository currently provides:
 - A status command and backward-compatible no-command status output.
 - Local workspace initialization with `projects/`, `exports/`, and workspace `README.md`.
 - Simple video project JSON records with safe generic fields only.
-- Project listing, detail display, status updates, and Markdown brief export with safe metadata and section status summaries.
+- Project listing, read-only workflow overview, detail display, status updates, and Markdown brief export with safe metadata and section status summaries.
 - Safe field editing for `core_question` and `notes`.
 - Safe section status editing for research, script, B-roll, editing, and publishing workflow steps.
 - Standard-library `unittest` coverage for CLI behavior and workspace operations.
@@ -122,7 +122,7 @@ Default production status is `idea`. Section statuses default to `not_started`. 
 
 ## Next Milestone
 
-After Phase 3E is reviewed, decide the next small local-only improvement without changing the repository's safety model, JSON schema, dependencies, workflows, or external-integration boundaries.
+After Phase 3F is reviewed, decide the next small local-only improvement without changing the repository's safety model, JSON schema, dependencies, workflows, or external-integration boundaries.
 
 ## Decision Rule
 
