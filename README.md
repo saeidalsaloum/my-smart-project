@@ -28,7 +28,7 @@ The CLI can:
 - Update a project's production status.
 - Update a project's `core_question` or `notes` field.
 - Update a project's section status fields for research, script, B-roll, editing, and publishing workflow steps.
-- Export a Markdown production brief.
+- Export a Markdown production brief with safe metadata and section statuses.
 
 All records use generic fields only. Do not store real private analytics, legal material, personal data, credentials, or sensitive production files in this repository or in example workspace data.
 
@@ -125,6 +125,11 @@ Export a brief:
 python3 -m src.main export-brief --workspace ./content-workspace --slug first-video
 ```
 
+The exported brief includes the project title, safe project metadata (`slug`,
+production `status`, `created_at`, and `updated_at`), the five section statuses,
+the core question, and empty production-planning sections. It does not export
+`notes`, private paths, credentials, diagnostics, or other system fields.
+
 Run tests:
 
 ```bash
@@ -169,6 +174,7 @@ This repository is intentionally conservative:
 - Workspace initialization refuses unsafe existing paths and does not overwrite existing project files or exported briefs.
 - Field editing is limited to `core_question` and `notes` and rewrites only the selected project JSON file.
 - Section status editing is limited to approved section names and approved section status values, and rewrites only the selected project JSON file.
+- Brief export includes only safe project metadata, section statuses, the core question, and production-planning headings.
 - New architecture should be documented before implementation.
 
 ## Development Workflow

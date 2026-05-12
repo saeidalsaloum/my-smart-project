@@ -213,8 +213,20 @@ def render_project_brief(project: VideoProject) -> str:
     """Render a safe Markdown production brief."""
     return f"""# {project.title}
 
+## Project Metadata
+
 - Slug: `{project.slug}`
-- Status: `{project.status}`
+- Production Status: `{project.status}`
+- Created At: `{project.created_at}`
+- Updated At: `{project.updated_at}`
+
+## Section Statuses
+
+- Research: `{project.research_status}`
+- Script: `{project.script_status}`
+- B-roll: `{project.broll_status}`
+- Editing: `{project.editing_status}`
+- Publishing: `{project.publishing_status}`
 
 ## Production Checklist
 

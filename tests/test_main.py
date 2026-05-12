@@ -764,6 +764,10 @@ class MainCliTest(unittest.TestCase):
             self.assertEqual(first.returncode, 0)
             self.assertTrue(brief_path.is_file())
             self.assertIn("# First Video", brief)
+            self.assertIn("## Project Metadata", brief)
+            self.assertIn("## Section Statuses", brief)
+            self.assertIn("- Slug: `first-video`", brief)
+            self.assertIn("- Production Status: `idea`", brief)
             self.assertIn("## Core Question", brief)
             self.assertIn("## Verified Claims", brief)
             self.assertIn("## Script Notes", brief)
@@ -773,6 +777,78 @@ class MainCliTest(unittest.TestCase):
             self.assertIn("## Risks", brief)
             self.assertEqual(second.returncode, 1)
             self.assertIn("Brief already exists", second.stderr)
+
+    def test_export_brief_includes_safe_metadata_and_current_section_statuses(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            workspace = self._init_workspace(temp_dir)
+            self._new_video(workspace, "first-video", "First Video")
+            project_path = workspace / "projects" / "first-video.json"
+            updates = [
+                ("research", "in_progress", "- Research: `in_progress`"),
+                ("script", "done", "- Script: `done`"),
+                ("broll", "blocked", "- B-roll: `blocked`"),
+                ("editing", "in_progress", "- Editing: `in_progress`"),
+                ("publishing", "done", "- Publishing: `done`"),
+            ]
+            notes = run_cli(
+                "update-field",
+                "--workspace",
+                str(workspace),
+                "--slug",
+                "first-video",
+                "--field",
+                "notes",
+                "--value",
+                "Draft notes should stay private.",
+            )
+            self.assertEqual(notes.returncode, 0, notes.stderr)
+            for section, status, _ in updates:
+                result = run_cli(
+                    "update-section-status",
+                    "--workspace",
+                    str(workspace),
+                    "--slug",
+                    "first-video",
+                    "--section",
+                    section,
+                    "--status",
+                    status,
+                )
+                self.assertEqual(result.returncode, 0, result.stderr)
+            data = json.loads(project_path.read_text(encoding="utf-8"))
+
+            export = run_cli(
+                "export-brief",
+                "--workspace",
+                str(workspace),
+                "--slug",
+                "first-video",
+            )
+
+            brief = (workspace / "exports" / "first-video_brief.md").read_text(
+                encoding="utf-8"
+            )
+            self.assertEqual(export.returncode, 0, export.stderr)
+            self.assertIn("## Project Metadata", brief)
+            self.assertIn("- Slug: `first-video`", brief)
+            self.assertIn("- Production Status: `idea`", brief)
+            self.assertIn(f"- Created At: `{data['created_at']}`", brief)
+            self.assertIn(f"- Updated At: `{data['updated_at']}`", brief)
+            self.assertIn("## Section Statuses", brief)
+            for _, _, expected_line in updates:
+                self.assertIn(expected_line, brief)
+            self.assertLess(
+                brief.index("## Project Metadata"),
+                brief.index("## Section Statuses"),
+            )
+            self.assertLess(
+                brief.index("## Section Statuses"),
+                brief.index("## Production Checklist"),
+            )
+            self.assertNotIn("Draft notes should stay private.", brief)
+            self.assertNotIn("## Notes", brief)
 
     def _init_workspace(self, temp_dir: str) -> Path:
         workspace = Path(temp_dir) / "content-workspace"

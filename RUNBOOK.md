@@ -176,6 +176,17 @@ The brief is written to:
 content-workspace/exports/first-video_brief.md
 ```
 
+The generated brief includes:
+
+- Project title.
+- Project Metadata: `slug`, production `status`, `created_at`, and `updated_at`.
+- Section Statuses: research, script, B-roll, editing, and publishing.
+- The current core question.
+- Empty production-planning sections for claims, script notes, B-roll, thumbnail ideas, publishing, and risks.
+
+It does not export `notes`, private filesystem paths, credentials, diagnostics,
+environment values, Git metadata, or other system fields.
+
 Existing project JSON files and existing brief files are not overwritten.
 
 ## Run Tests
