@@ -120,6 +120,7 @@ Default production status is `idea`. Section statuses default to `not_started`. 
 
 ## Open Decisions
 
+- Whether to approve a future branch cleanup using `docs/BRANCH_HYGIENE_PLAN.md`.
 - Whether the next feature should add checklist-specific commands, improve command UX, improve test quality, or stop feature work and stabilize.
 - Whether local workspace records should later support schema versions.
 - Whether packaging is useful after the CLI stabilizes.
