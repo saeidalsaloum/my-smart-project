@@ -281,6 +281,53 @@ class MainCliTest(unittest.TestCase):
             self.assertNotEqual(result.returncode, 0)
             self.assertIn("invalid choice", result.stderr)
 
+    def test_overview_videos_does_not_rewrite_workspace_files(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            workspace = self._init_workspace(temp_dir)
+            self._new_video(workspace, "first-video", "First Video")
+            self._new_video(workspace, "second-video", "Second Video")
+            status_update = run_cli(
+                "update-status",
+                "--workspace",
+                str(workspace),
+                "--slug",
+                "first-video",
+                "--status",
+                "editing",
+            )
+            section_update = run_cli(
+                "update-section-status",
+                "--workspace",
+                str(workspace),
+                "--slug",
+                "first-video",
+                "--section",
+                "research",
+                "--status",
+                "in_progress",
+            )
+            self.assertEqual(status_update.returncode, 0, status_update.stderr)
+            self.assertEqual(section_update.returncode, 0, section_update.stderr)
+            before_files = self._workspace_file_snapshots(workspace)
+
+            overview = run_cli("overview-videos", "--workspace", str(workspace))
+            filtered = run_cli(
+                "overview-videos",
+                "--workspace",
+                str(workspace),
+                "--status",
+                "editing",
+            )
+
+            after_files = self._workspace_file_snapshots(workspace)
+            self.assertEqual(overview.returncode, 0, overview.stderr)
+            self.assertEqual(filtered.returncode, 0, filtered.stderr)
+            self.assertIn("first-video", overview.stdout)
+            self.assertIn("second-video", overview.stdout)
+            self.assertIn("first-video", filtered.stdout)
+            self.assertNotIn("second-video", filtered.stdout)
+            self.assertEqual(after_files, before_files)
+
     def test_show_video_prints_project_detail(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             workspace = self._init_workspace(temp_dir)
