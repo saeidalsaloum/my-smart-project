@@ -158,6 +158,7 @@ No package installation is required.
 |-- README.md
 |-- RUNBOOK.md
 |-- docs/
+|   |-- BRANCH_HYGIENE_PLAN.md
 |   |-- DEVELOPMENT_GUIDE.md
 |   |-- PROJECT_PLAN.md
 |   `-- SECURITY.md
@@ -213,6 +214,7 @@ The GitHub Actions workflow runs CLI smoke checks and `unittest` on `push` and `
 
 - `AGENTS.md`: operating rules for Codex and automation-assisted changes.
 - `RUNBOOK.md`: local run, test, verification, and troubleshooting steps.
+- `docs/BRANCH_HYGIENE_PLAN.md`: future-only branch cleanup planning; no branch deletion has been performed by the plan.
 - `docs/PROJECT_PLAN.md`: confirmed scope, non-goals, risks, open decisions, and next milestone.
 - `docs/DEVELOPMENT_GUIDE.md`: contribution and review workflow.
 - `docs/SECURITY.md`: concise security and privacy rules.

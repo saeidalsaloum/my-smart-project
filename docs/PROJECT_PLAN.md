@@ -17,6 +17,7 @@ The repository currently provides:
 - Project listing, read-only workflow overview with optional production-status filtering, detail display, status updates, and Markdown brief export with safe metadata and section status summaries.
 - Safe field editing for `core_question` and `notes`.
 - Safe section status editing for research, script, B-roll, editing, and publishing workflow steps.
+- A future-only branch hygiene plan that records cleanup candidates without deleting branches.
 - Standard-library `unittest` coverage for CLI behavior and workspace operations.
 - A GitHub Actions workflow that runs tests on `push` and `pull_request` without secrets or deployment.
 
@@ -81,6 +82,7 @@ Completed milestones:
 - Add safe project metadata and section statuses to exported Markdown briefs.
 - Add a read-only `overview-videos` command and optional production-status filtering.
 - Keep README and project plan status wording aligned after completed Phase 3 milestones.
+- Add a future-only branch hygiene planning audit without deleting branches.
 
 Current milestone:
 
