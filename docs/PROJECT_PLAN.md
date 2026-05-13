@@ -80,10 +80,11 @@ Completed milestones:
 - Validate stored section statuses when loading project JSON.
 - Add safe project metadata and section statuses to exported Markdown briefs.
 - Add a read-only `overview-videos` command and optional production-status filtering.
+- Keep README and project plan status wording aligned after completed Phase 3 milestones.
 
 Current milestone:
 
-Phase 3H keeps documentation aligned with the merged local CLI workflow before choosing the next small improvement.
+Continue using read-only decision gates before choosing any new local-only improvement.
 
 ### Phase 4: Architecture Decision
 
@@ -119,14 +120,14 @@ Default production status is `idea`. Section statuses default to `not_started`. 
 
 ## Open Decisions
 
-- Whether the next feature should edit project fields, add checklist status commands, or improve brief content.
+- Whether the next feature should add checklist-specific commands, improve command UX, improve test quality, or stop feature work and stabilize.
 - Whether local workspace records should later support schema versions.
 - Whether packaging is useful after the CLI stabilizes.
 - Whether additional quality tools are worth adding while keeping dependencies minimal.
 
 ## Next Milestone
 
-After Phase 3H is reviewed, decide the next small local-only improvement without changing the repository's safety model, JSON schema, dependencies, workflows, or external-integration boundaries.
+Use a read-only decision gate to choose the next small local-only improvement without changing the repository's safety model, JSON schema, dependencies, workflows, or external-integration boundaries.
 
 ## Decision Rule
 
