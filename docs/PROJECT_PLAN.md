@@ -19,6 +19,7 @@ The repository currently provides:
 - Safe section status editing for research, script, B-roll, editing, and publishing workflow steps.
 - A future-only branch hygiene plan that records cleanup candidates without deleting branches.
 - A strategic stabilization audit that records the default posture before further feature work.
+- A post-3N stabilization decision that records the test-governance posture after small test-quality work.
 - Standard-library `unittest` coverage for CLI behavior and workspace operations.
 - A GitHub Actions workflow that runs tests on `push` and `pull_request` without secrets or deployment.
 
@@ -85,10 +86,13 @@ Completed milestones:
 - Keep README and project plan status wording aligned after completed Phase 3 milestones.
 - Add a future-only branch hygiene planning audit without deleting branches.
 - Add a strategic stabilization audit before choosing more feature work.
+- Add deterministic test coverage for `overview-videos` read-only behavior.
+- Add small test-local helperization for repeated project JSON reads.
+- Record the post-3N stabilization decision.
 
 Current milestone:
 
-Continue using read-only decision gates before choosing any new local-only improvement.
+Preserve stability by default and use read-only decision gates before choosing any new local-only improvement.
 
 ### Phase 4: Architecture Decision
 
@@ -132,7 +136,7 @@ Default production status is `idea`. Section statuses default to `not_started`. 
 
 ## Next Milestone
 
-Use a read-only decision gate to choose the next small local-only improvement without changing the repository's safety model, JSON schema, dependencies, workflows, or external-integration boundaries.
+Preserve stability by default. Use a read-only decision gate before choosing any new local-only improvement, and do not change the repository's safety model, JSON schema, dependencies, workflows, or external-integration boundaries.
 
 ## Decision Rule
 

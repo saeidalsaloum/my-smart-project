@@ -220,7 +220,8 @@ The GitHub Actions workflow runs CLI smoke checks and `unittest` on `push` and `
 - `docs/DEVELOPMENT_GUIDE.md`: contribution and review workflow.
 - `docs/SECURITY.md`: concise security and privacy rules.
 - `docs/STRATEGIC_STABILIZATION_AUDIT.md`: current stabilization posture and future-work boundaries.
+- `docs/POST_3N_STABILIZATION_DECISION.md`: post-test-helperization stabilization checkpoint.
 
 ## Next Milestone
 
-Use a read-only decision gate to choose the next small local-only improvement before opening another implementation PR.
+Preserve stability by default. Use a read-only decision gate before opening another implementation PR.
