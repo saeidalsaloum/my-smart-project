@@ -18,6 +18,7 @@ The repository currently provides:
 - Safe field editing for `core_question` and `notes`.
 - Safe section status editing for research, script, B-roll, editing, and publishing workflow steps.
 - A future-only branch hygiene plan that records cleanup candidates without deleting branches.
+- A strategic stabilization audit that records the default posture before further feature work.
 - Standard-library `unittest` coverage for CLI behavior and workspace operations.
 - A GitHub Actions workflow that runs tests on `push` and `pull_request` without secrets or deployment.
 
@@ -83,6 +84,7 @@ Completed milestones:
 - Add a read-only `overview-videos` command and optional production-status filtering.
 - Keep README and project plan status wording aligned after completed Phase 3 milestones.
 - Add a future-only branch hygiene planning audit without deleting branches.
+- Add a strategic stabilization audit before choosing more feature work.
 
 Current milestone:
 
@@ -123,7 +125,7 @@ Default production status is `idea`. Section statuses default to `not_started`. 
 ## Open Decisions
 
 - Whether to approve a future branch cleanup using `docs/BRANCH_HYGIENE_PLAN.md`.
-- Whether the next feature should add checklist-specific commands, improve command UX, improve test quality, or stop feature work and stabilize.
+- Whether the next feature should add checklist-specific commands, improve command UX, improve test quality, or keep feature work paused while stabilizing.
 - Whether local workspace records should later support schema versions.
 - Whether packaging is useful after the CLI stabilizes.
 - Whether additional quality tools are worth adding while keeping dependencies minimal.

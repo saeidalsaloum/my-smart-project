@@ -161,7 +161,8 @@ No package installation is required.
 |   |-- BRANCH_HYGIENE_PLAN.md
 |   |-- DEVELOPMENT_GUIDE.md
 |   |-- PROJECT_PLAN.md
-|   `-- SECURITY.md
+|   |-- SECURITY.md
+|   `-- STRATEGIC_STABILIZATION_AUDIT.md
 |-- pyproject.toml
 |-- src/
 |   |-- main.py
@@ -218,6 +219,7 @@ The GitHub Actions workflow runs CLI smoke checks and `unittest` on `push` and `
 - `docs/PROJECT_PLAN.md`: confirmed scope, non-goals, risks, open decisions, and next milestone.
 - `docs/DEVELOPMENT_GUIDE.md`: contribution and review workflow.
 - `docs/SECURITY.md`: concise security and privacy rules.
+- `docs/STRATEGIC_STABILIZATION_AUDIT.md`: current stabilization posture and future-work boundaries.
 
 ## Next Milestone
 
