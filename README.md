@@ -219,4 +219,4 @@ The GitHub Actions workflow runs CLI smoke checks and `unittest` on `push` and `
 
 ## Next Milestone
 
-Complete the Phase 3H review gate, keep the branch in draft until the gate passes, then wait for GitHub Actions before merge.
+Use a read-only decision gate to choose the next small local-only improvement before opening another implementation PR.
