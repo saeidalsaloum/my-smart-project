@@ -112,8 +112,7 @@ class MainCliTest(unittest.TestCase):
                 "First Video",
             )
 
-            project_path = workspace / "projects" / "first-video.json"
-            data = json.loads(project_path.read_text(encoding="utf-8"))
+            data = self._read_project(workspace, "first-video")
             self.assertEqual(result.returncode, 0)
             self.assertEqual(list(data.keys()), EXPECTED_FIELDS)
             self.assertEqual(data["slug"], "first-video")
@@ -351,8 +350,7 @@ class MainCliTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp_dir:
             workspace = self._init_workspace(temp_dir)
             self._new_video(workspace, "first-video", "First Video")
-            project_path = workspace / "projects" / "first-video.json"
-            before = json.loads(project_path.read_text(encoding="utf-8"))
+            before = self._read_project(workspace, "first-video")
 
             result = run_cli(
                 "update-status",
@@ -364,7 +362,7 @@ class MainCliTest(unittest.TestCase):
                 "editing",
             )
 
-            after = json.loads(project_path.read_text(encoding="utf-8"))
+            after = self._read_project(workspace, "first-video")
             self.assertEqual(result.returncode, 0)
             self.assertEqual(after["status"], "editing")
             self.assertEqual(after["created_at"], before["created_at"])
@@ -392,8 +390,7 @@ class MainCliTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp_dir:
             workspace = self._init_workspace(temp_dir)
             self._new_video(workspace, "first-video", "First Video")
-            project_path = workspace / "projects" / "first-video.json"
-            before = json.loads(project_path.read_text(encoding="utf-8"))
+            before = self._read_project(workspace, "first-video")
 
             result = run_cli(
                 "update-field",
@@ -407,7 +404,7 @@ class MainCliTest(unittest.TestCase):
                 "Why does this topic matter?",
             )
 
-            after = json.loads(project_path.read_text(encoding="utf-8"))
+            after = self._read_project(workspace, "first-video")
             self.assertEqual(result.returncode, 0)
             self.assertEqual(result.stdout.strip(), "Updated first-video core_question.")
             self.assertEqual(list(after.keys()), EXPECTED_FIELDS)
@@ -1034,6 +1031,10 @@ class MainCliTest(unittest.TestCase):
             title,
         )
         self.assertEqual(result.returncode, 0, result.stderr)
+
+    def _read_project(self, workspace: Path, slug: str) -> dict[str, object]:
+        project_path = workspace / "projects" / f"{slug}.json"
+        return json.loads(project_path.read_text(encoding="utf-8"))
 
     def _workspace_file_snapshots(self, workspace: Path) -> dict[str, str]:
         return {
