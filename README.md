@@ -160,6 +160,7 @@ No package installation is required.
 |-- docs/
 |   |-- BRANCH_HYGIENE_PLAN.md
 |   |-- DEVELOPMENT_GUIDE.md
+|   |-- POST_3N_STABILIZATION_DECISION.md
 |   |-- PROJECT_PLAN.md
 |   |-- SECURITY.md
 |   `-- STRATEGIC_STABILIZATION_AUDIT.md
